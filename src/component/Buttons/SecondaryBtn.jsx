@@ -1,25 +1,23 @@
 import { motion } from "framer-motion";
-const PrimaryBtn = ({ btnText, onClick, type = "button" }) => {
+const SecondaryBtn = ({ children }) => {
   return (
     <motion.button
       className="btn shadow-none border-none rounded-none relative overflow-hidden w-full"
       initial="initial"
       variants={{
-        initial: {backgroundColor: "#E7E5E4"},
+        initial: { backgroundColor: "#E7E5E4" },
         hover: {
           color: "#ffffff",
         },
       }}
       whileHover="hover"
       whileTap={{ scale: 0.98 }}
-      type={type}
-      onClick={onClick}
     >
       <span className="font-normal uppercase tracking-widest relative z-10">
-        {btnText}
+        {children}
       </span>
       <motion.span
-        className="absolute inset-0 z-0 border-r-4 border-b-4"
+        className="absolute inset-0 z-0"
         variants={{
           initial: { x: "-100%" },
           hover: {
@@ -33,4 +31,4 @@ const PrimaryBtn = ({ btnText, onClick, type = "button" }) => {
   );
 };
 
-export default PrimaryBtn;
+export default SecondaryBtn;
