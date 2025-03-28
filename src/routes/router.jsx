@@ -4,6 +4,7 @@ import Main from "../layouts/Main";
 import Home from "../pages/Home/Home";
 import SignIn from "../pages/Auth/SignIn";
 import SignUp from "../pages/Auth/SignUp";
+import AddFood from "../pages/AddFood/AddFood";
 
 const router = createBrowserRouter([
     {
@@ -14,6 +15,10 @@ const router = createBrowserRouter([
             {
                 path: "/",
                 element: <Home/>
+            },
+            {
+                path: "/add-food",
+                element: <AddFood/>
             },
             {
                 path: "/sign-in",

@@ -108,7 +108,7 @@ export const authError = (error) => {
 export const authLoading = (action) => {
   return toast.loading(
     <div className="flex items-center gap-3 text-stone-700">
-      <span className="animate-spin text-lg">⏳</span>
+      <span className="text-lg">⏳</span>
       <p>{loadingMessage[action] || "Processing..."}</p>
     </div>,
     {

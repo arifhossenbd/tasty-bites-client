@@ -20,6 +20,41 @@ const Navbar = () => {
       </NavLink>
     </li>
   ));
+
+  const privateLinks = (
+    <div className="flex flex-col lg:flex-row lg:items-center lg:gap-3">
+      {user ? (
+        <>
+          <li>
+            <NavLink
+              className={({ isActive }) =>
+                isActive
+                  ? `text-stone-500 font-semibold ${transitionNoDelay}`
+                  : `hover:text-stone-500 font-semibold ${transitionNoDelay}`
+              }
+              to="/my-foods"
+            >
+              My Foods
+            </NavLink>
+          </li>
+          <li>
+            <NavLink
+              className={({ isActive }) =>
+                isActive
+                  ? `text-stone-500 font-semibold ${transitionNoDelay}`
+                  : `hover:text-stone-500 font-semibold ${transitionNoDelay}`
+              }
+              to="/add-food"
+            >
+              Add Food
+            </NavLink>
+          </li>
+        </>
+      ) : (
+        ""
+      )}
+    </div>
+  );
   return (
     <div>
       <div className="navbar bg-base-100 shadow-sm flex items-center justify-between gap-2 md:gap-0 px-4">
@@ -45,6 +80,7 @@ const Navbar = () => {
             className="dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
           >
             {link}
+            {privateLinks}
           </ul>
         </div>
         <div>
@@ -53,7 +89,9 @@ const Navbar = () => {
           </NavLink>
         </div>
         <div className="hidden lg:flex">
-          <ul className="flex items-center gap-4">{link}</ul>
+          <ul className="flex items-center gap-3">
+            {link} {privateLinks}
+          </ul>
         </div>
         <div className="">
           <div className="flex items-center gap-2">
