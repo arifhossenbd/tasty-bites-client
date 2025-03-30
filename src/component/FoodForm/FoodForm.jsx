@@ -2,31 +2,60 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { toast } from "react-hot-toast";
 import SecondaryBtn from "../Buttons/SecondaryBtn";
+import { useAuth } from "../../hooks/useAuth";
+import {
+  crudError,
+  crudLoading,
+  crudSuccess,
+  dismissCrudToast,
+} from "../../utils/CrudToast";
 
-const FoodForm = ({
-  onSubmit,
-  btnText = "Add Food",
-  header,
-  defaultValues = {},
-  user,
-}) => {
+const FoodForm = ({ onSubmit, btnText, header, food = {} }) => {
   const [loading, setLoading] = useState(false);
+  const { user, loading: authLoading } = useAuth();
+  let { foodName, foodImage, category, quantity, price, origin, description } =
+    food;
 
   const handleForm = async (e) => {
     e.preventDefault();
     setLoading(true);
-    const formData = new FormData(e.target);
+    const toastId = crudLoading(btnText === "Add" ? "create" : "update");
+    const form = e.target;
+    const formData = new FormData(form);
     const foodData = Object.fromEntries(formData.entries());
 
     try {
-      await onSubmit({
+      const result = await onSubmit({
         ...foodData,
-        addedBy: { name: user?.name, email: user?.email },
+        addedBy: { name: user?.displayName, email: user?.email },
       });
-      toast.success("🍕 Food item successfully added!");
-      e.target.reset();
+
+      if (!result) {
+        throw new Error("No response from server");
+      }
+      dismissCrudToast(toastId);
+
+      crudSuccess(btnText === "Add" ? "create" : "update", foodName);
+      if (btnText === "Add") {
+        form.reset();
+      }
     } catch (error) {
-      toast.error("❌ Something went wrong!");
+      dismissCrudToast(toastId);
+
+      // handle different type error
+      let errorConfig = {};
+      if (error.message.includes("exist")) {
+        errorConfig = { type: "conflict" };
+      } else if (error.message.includes("found")) {
+        errorConfig = { type: "notFound" };
+      } else if (error.message.includes("server")) {
+        errorConfig = { type: "serverError" };
+      }
+      crudError(error, {
+        ...errorConfig,
+        message:
+          error.message || `Failed to ${btnText.toLowerCase()} food item`,
+      });
     } finally {
       setLoading(false);
     }
@@ -35,7 +64,12 @@ const FoodForm = ({
   return (
     <div className="py-6 md:py-10 lg:py-12">
       <motion.div
-        initial={{ y: -50, opacity: 0, backgroundColor: "#f5f5f4" }}
+        initial={{
+          y: -50,
+          opacity: 0,
+          backgroundColor: "#f5f5f4",
+          color: "#57534e",
+        }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.5, ease: "easeInOut" }}
         className="card w-full max-w-lg mx-auto shadow-xl hover:shadow-2xl rounded-none"
@@ -62,7 +96,7 @@ const FoodForm = ({
                 id="foodName"
                 type="text"
                 name="foodName"
-                defaultValue={defaultValues.foodName || ""}
+                defaultValue={foodName || ""}
                 className="input w-full rounded-none outline-none focus:outline-none shadow-none border-none focus:placeholder:text-white"
                 placeholder="Enter food name"
                 required
@@ -85,7 +119,7 @@ const FoodForm = ({
                 id="foodImage"
                 type="url"
                 name="foodImage"
-                defaultValue={defaultValues.foodImage || ""}
+                defaultValue={foodImage || ""}
                 className="input w-full rounded-none outline-none focus:outline-none shadow-none border-none focus:placeholder:text-white"
                 placeholder="Enter image URL"
                 required
@@ -95,11 +129,26 @@ const FoodForm = ({
             {/* 🍱 Category */}
             <div>
               <label className="label font-semibold">🍕 Food Category</label>
-              <select name="category" className="w-full p-2 border rounded-md">
+              <motion.select
+                initial={{ opacity: 0, backgroundColor: "#a8a29E" }}
+                animate={{ opacity: 1, backgroundColor: "#ffffff" }}
+                transition={{ duration: 0.5, delay: 0.3 }}
+                whileFocus={{
+                  scale: 1.02,
+                  backgroundColor: "#57534e",
+                  color: "#ffffff",
+                  transition: { duration: 0.2 },
+                }}
+                name="category"
+                id="category"
+                defaultValue={category || ""}
+                className="w-full px-1.5 py-3 rounded-none outline-none focus:outline-none shadow-none border-none"
+              >
+                <option value="">😋 Select a Food</option>
                 <option value="Fast Food">🍔 Fast Food</option>
                 <option value="Dessert">🍰 Dessert</option>
                 <option value="Beverage">🥤 Beverage</option>
-              </select>
+              </motion.select>
             </div>
 
             {/* 🔢 Quantity */}
@@ -118,10 +167,11 @@ const FoodForm = ({
                 id="quantity"
                 type="number"
                 name="quantity"
-                defaultValue={defaultValues.quantity || ""}
+                defaultValue={quantity || ""}
                 className="input w-full rounded-none outline-none focus:outline-none shadow-none border-none focus:placeholder:text-white"
                 placeholder="Enter quantity"
                 min="1"
+                max="1"
                 required
               />
             </div>
@@ -142,10 +192,10 @@ const FoodForm = ({
                 id="price"
                 type="number"
                 name="price"
-                defaultValue={defaultValues.price || ""}
+                defaultValue={price || ""}
                 className="input w-full rounded-none outline-none focus:outline-none shadow-none border-none focus:placeholder:text-white"
                 placeholder="Enter price"
-                min="1"
+                min="10"
                 required
               />
             </div>
@@ -168,9 +218,9 @@ const FoodForm = ({
                 id="origin"
                 type="text"
                 name="origin"
-                defaultValue={defaultValues.origin || ""}
+                defaultValue={origin || ""}
                 className="input w-full rounded-none outline-none focus:outline-none shadow-none border-none focus:placeholder:text-white"
-                placeholder="e.g., Italy"
+                placeholder="e.g., Bangladesh"
                 required
               />
             </div>
@@ -188,8 +238,9 @@ const FoodForm = ({
                   color: "#ffffff",
                   transition: { duration: 0.2 },
                 }}
+                id="description"
                 name="description"
-                defaultValue={defaultValues.description || ""}
+                defaultValue={description || ""}
                 className="w-full rounded-none outline-none focus:outline-none shadow-none border-none focus:placeholder:text-white p-2"
                 placeholder="Ingredients, making procedure, etc."
                 required
@@ -199,24 +250,25 @@ const FoodForm = ({
             {/* 📧 Email (Auto-filled, Not Editable) */}
             <div>
               <label className="label font-semibold">📧 Your Email</label>
-              <motion.input
-                initial={{ opacity: 0, backgroundColor: "#a8a29E" }}
-                animate={{ opacity: 1, backgroundColor: "#ffffff" }}
-                transition={{ duration: 0.5, delay: 0.3 }}
-                whileFocus={{
-                  scale: 1.02,
-                  backgroundColor: "#57534e",
-                  color: "#ffffff",
-                  transition: { duration: 0.2 },
-                }}
-                disabled
-                type="email"
-                name="email"
-                value={user?.email}
-                className="input w-full rounded-none outline-none focus:outline-none shadow-none border-none focus:placeholder:text-white"
-                required
-                readOnly
-              />
+              {authLoading ? (
+                <div className="skeleton h-12 w-full"></div>
+              ) : (
+                <motion.input
+                  initial={{
+                    opacity: 0,
+                    backgroundColor: "#a8a29E",
+                    color: "#57534e",
+                  }}
+                  animate={{ opacity: 1, backgroundColor: "#ffffff" }}
+                  disabled
+                  type="email"
+                  name="email"
+                  defaultValue={user?.email || "arifprodev@gmail.com"}
+                  className="input w-full rounded-none outline-none focus:outline-none shadow-none border-none focus:placeholder:text-white"
+                  required
+                  readOnly
+                />
+              )}
             </div>
 
             {/* 🛒 Submit Button (Same as AuthForm) */}
@@ -225,7 +277,7 @@ const FoodForm = ({
                 {loading ? (
                   <span className="loading loading-spinner"></span>
                 ) : (
-                  <span>{btnText} 🛒</span>
+                  <span>{btnText} Food 🛒</span>
                 )}
               </SecondaryBtn>
             </div>

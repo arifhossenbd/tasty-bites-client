@@ -20,45 +20,10 @@ const Navbar = () => {
       </NavLink>
     </li>
   ));
-
-  const privateLinks = (
-    <div className="flex flex-col lg:flex-row lg:items-center lg:gap-3">
-      {user ? (
-        <>
-          <li>
-            <NavLink
-              className={({ isActive }) =>
-                isActive
-                  ? `text-stone-500 font-semibold ${transitionNoDelay}`
-                  : `hover:text-stone-500 font-semibold ${transitionNoDelay}`
-              }
-              to="/my-foods"
-            >
-              My Foods
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
-              className={({ isActive }) =>
-                isActive
-                  ? `text-stone-500 font-semibold ${transitionNoDelay}`
-                  : `hover:text-stone-500 font-semibold ${transitionNoDelay}`
-              }
-              to="/add-food"
-            >
-              Add Food
-            </NavLink>
-          </li>
-        </>
-      ) : (
-        ""
-      )}
-    </div>
-  );
   return (
     <div>
       <div className="navbar bg-base-100 shadow-sm flex items-center justify-between gap-2 md:gap-0 px-4">
-        <div className="dropdown lg:hidden">
+        <div className="dropdown dropdown-hover lg:hidden">
           <div tabIndex={0} role="button" className="lg:hidden">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -77,10 +42,9 @@ const Navbar = () => {
           </div>
           <ul
             tabIndex={0}
-            className="dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
+            className="dropdown-content bg-base-100 rounded-box z-1 w-52 p-2 shadow"
           >
             {link}
-            {privateLinks}
           </ul>
         </div>
         <div>
@@ -89,13 +53,11 @@ const Navbar = () => {
           </NavLink>
         </div>
         <div className="hidden lg:flex">
-          <ul className="flex items-center gap-3">
-            {link} {privateLinks}
-          </ul>
+          <ul className="flex items-center gap-3">{link}</ul>
         </div>
         <div className="">
           <div className="flex items-center gap-2">
-            <div className="dropdown dropdown-end relative">
+            <div className="dropdown dropdown-end dropdown-hover relative">
               <div
                 tabIndex={0}
                 role="button"
@@ -122,7 +84,7 @@ const Navbar = () => {
               </div>
               <div
                 tabIndex={0}
-                className="card card-compact dropdown-content bg-base-100 z-1 mt-3 w-52 shadow"
+                className="card card-compact dropdown-content bg-base-100 z-1 w-52 shadow"
               >
                 <div className="card-body">
                   <span className="text-lg font-bold">8 Items</span>
@@ -136,32 +98,42 @@ const Navbar = () => {
               </div>
             </div>
             {loading ? (
-              <div className="w-10 rounded-full bg-stone-500 h-10 animate-pulse"></div>
+              <div className="w-10 rounded-full bg-stone-500 h-10 skeleton"></div>
             ) : (
               <div>
                 {user ? (
-                  <div className="dropdown dropdown-end">
+                  <div className="dropdown dropdown-end dropdown-hover">
                     <div
                       tabIndex={0}
                       role="button"
                       className="btn btn-ghost btn-circle avatar"
                     >
-                      <div className="w-10 rounded-full">
-                        <img alt={user?.displayName} src={user?.photoURL} />
-                      </div>
+                      {loading ? (
+                        <div className="w-10 rounded-full bg-stone-500 h-10 skeleton"></div>
+                      ) : (
+                        <div className="w-10 rounded-full">
+                          <img src={user?.photoURL} alt={user?.displayName} />
+                        </div>
+                      )}
                     </div>
                     <ul
                       tabIndex={0}
-                      className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
+                      className="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm"
                     >
                       <li>
-                        <a className="justify-between">
-                          Profile
-                          <span className="badge">New</span>
-                        </a>
+                        <Link to="/my-foods">My Foods</Link>
                       </li>
                       <li>
-                        <a>Settings</a>
+                        <Link to="/add-food">Add Food</Link>
+                      </li>
+                      <li>
+                        <Link to="/my-orders">My Orders</Link>
+                      </li>
+                      <li>
+                        <Link className="justify-between">
+                          Profile
+                          <span className="badge">New</span>
+                        </Link>
                       </li>
                       <li>
                         <button onClick={() => signOut()}>Sign Out</button>

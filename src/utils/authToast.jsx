@@ -70,7 +70,7 @@ export const authSuccess = (action, user = null) => {
       </div>
     </div>,
     {
-      duration: 5000,
+      duration: 2000,
       style: {
         ...baseStyle,
         background: "#f0fdf4",
@@ -95,7 +95,7 @@ export const authError = (error) => {
       </div>
     </div>,
     {
-      duration: 4000,
+      duration: 2000,
       style: {
         ...baseStyle,
         background: "#fef2f2",
@@ -112,7 +112,7 @@ export const authLoading = (action) => {
       <p>{loadingMessage[action] || "Processing..."}</p>
     </div>,
     {
-      duration: 5000,
+      duration: 2000,
       style: { ...baseStyle, background: "#fafaf9", borderColor: "#78716c" },
     }
   );

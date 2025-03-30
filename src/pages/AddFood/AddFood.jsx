@@ -1,14 +1,26 @@
 import FoodForm from "../../component/FoodForm/FoodForm";
-import { useAuth } from "../../hooks/useAuth";
+import axios from "axios";
 
 const AddFood = () => {
-    const {user} = useAuth();
-    console.log(user)
-    return (
-        <div>
-            <FoodForm user={user}/>
-        </div>
-    );
+  const date = Date.now();
+  const handleAddFood = async (data) => {
+    try {
+      const response = await axios.post(`${import.meta.env.VITE_SERVER_API}/food`, {
+        ...data,
+        createAt: date,
+        updateAt: date,
+      });
+      return response.data
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  };
+  return (
+    <div>
+      <FoodForm onSubmit={handleAddFood} btnText="Add" />
+    </div>
+  );
 };
 
 export default AddFood;

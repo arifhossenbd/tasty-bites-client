@@ -5,7 +5,7 @@ const PrimaryBtn = ({ btnText, onClick, type = "button" }) => {
       className="btn shadow-none border-none rounded-none relative overflow-hidden w-full"
       initial="initial"
       variants={{
-        initial: {backgroundColor: "#E7E5E4"},
+        initial: {backgroundColor: "#e7e5e4", color: "#57534e"},
         hover: {
           color: "#ffffff",
         },
