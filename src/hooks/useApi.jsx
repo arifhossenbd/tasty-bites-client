@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 
 const useApi = () => {
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null)
   const axiosPublic = useAxiosPublic();
   const axiosSecure = useAxiosSecure();
 
@@ -15,6 +16,7 @@ const useApi = () => {
   ) => {
     try {
       setLoading(true);
+      setError(null)
       const response = await requestFn();
       if (successMessage) {
         toast.success(successMessage, {
@@ -24,11 +26,13 @@ const useApi = () => {
       }
       return response.data;
     } catch (error) {
-      const message =
+      let message =
         error.response?.data?.message ||
         error.message ||
         errorMessage ||
         "Something went wrong";
+        console.log(message, "from axios")
+        setError(message)
       toast.error(message, {
         position: "top-center",
         duration: 3000,
@@ -94,7 +98,7 @@ const useApi = () => {
     successMessage = "Updated successfully"
   ) => {
     return apiCall(
-      () => axiosSecure.put(endpoint, data, config),
+      () => axiosSecure.patch(endpoint, data, config),
       successMessage,
       "Failed to partially update data"
     );
@@ -107,7 +111,7 @@ const useApi = () => {
     successMessage = "Deleted successfully"
   ) => {
     return apiCall(
-      () => axiosSecure.put(endpoint, config),
+      () => axiosSecure.delete(endpoint, config),
       successMessage,
       "Failed to delete data"
     );
@@ -115,6 +119,7 @@ const useApi = () => {
 
   return {
     loading,
+    error,
     createData,
     getPublicData,
     getSecureData,
