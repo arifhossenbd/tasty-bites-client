@@ -11,8 +11,8 @@ const Navbar = () => {
       <NavLink
         className={({ isActive }) =>
           isActive
-            ? `text-stone-500 font-semibold ${transitionNoDelay}`
-            : `hover:text-stone-500 font-semibold ${transitionNoDelay}`
+            ? `text-stone-500 ${transitionNoDelay}`
+            : `hover:text-stone-500 ${transitionNoDelay}`
         }
         to={link?.path}
       >
@@ -21,8 +21,8 @@ const Navbar = () => {
     </li>
   ));
   return (
-    <div>
-      <div className="navbar bg-base-100 shadow-sm flex items-center justify-between gap-2 md:gap-0 px-4">
+    <div className="">
+      <div className="navbar bg-base-100 shadow-sm flex items-center justify-between gap-2 md:gap-0 px-4 md:px-0 md:w-11/12 lg:w-10/12 mx-auto">
         <div className="dropdown dropdown-hover lg:hidden">
           <div tabIndex={0} role="button" className="lg:hidden">
             <svg

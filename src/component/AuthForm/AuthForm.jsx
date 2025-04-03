@@ -70,7 +70,7 @@ const AuthForm = ({ header, footer, fieldset, btnText, handleForm, loading }) =>
               </button>
             </div>
             <div className="pt-4">
-              <SecondaryBtn disabled={loading}>
+              <SecondaryBtn loading={loading} disabled={loading}>
                 {loading ?  <span className="loading loading-spinner"></span> : <span>{btnText}</span>}
               </SecondaryBtn>
             </div>

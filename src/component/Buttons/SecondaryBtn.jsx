@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-const SecondaryBtn = ({ children }) => {
+const SecondaryBtn = ({ children, loading }) => {
   return (
     <motion.button
       className="btn shadow-none border-none rounded-none relative overflow-hidden w-full"
@@ -10,7 +10,7 @@ const SecondaryBtn = ({ children }) => {
           color: "#ffffff",
         },
       }}
-      whileHover="hover"
+      whileHover={loading ? "" : "hover"}
       whileTap={{ scale: 0.98 }}
     >
       <span className="font-normal uppercase tracking-widest relative z-10">

@@ -1,5 +1,12 @@
 import { useEffect, useState } from "react";
 import { AuthContext } from "./AuthContext";
+import { useLocation, useNavigate } from "react-router-dom";
+import {
+  authError,
+  authLoading,
+  authSuccess,
+  dismissAuthToast,
+} from "../../utils/authToast";
 import {
   createUserWithEmailAndPassword,
   FacebookAuthProvider,
@@ -8,21 +15,16 @@ import {
   onAuthStateChanged,
   signInWithEmailAndPassword,
   signInWithPopup,
-  signOut,
   updateProfile,
+  signOut,
 } from "firebase/auth";
+import useAxiosPublic from "../../hooks/useAxiosPublic";
 import auth from "../../firebase/firebase.config";
-import { useLocation, useNavigate } from "react-router-dom";
-import {
-  authError,
-  authLoading,
-  authSuccess,
-  dismissAuthToast,
-} from "../../utils/authToast";
 
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
+  const axiosPublic = useAxiosPublic();
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -57,14 +59,10 @@ const AuthProvider = ({ children }) => {
   };
 
   const signUp = (email, password, name, photo) => {
-    authAction("signUp", async () => {
-      const result = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
+    authAction("signUp", () => {
+      const result = createUserWithEmailAndPassword(auth, email, password);
       if ((name, photo)) {
-        await updateProfile(result?.user, {
+        updateProfile(result?.user, {
           displayName: name,
           photoURL: photo,
         });
@@ -79,10 +77,10 @@ const AuthProvider = ({ children }) => {
     );
   };
 
-  const socialSignIn = async (providerName) => {
+  const socialSignIn = (providerName) => {
     const provider = providers[providerName];
     try {
-      const result = await authAction("signIn", () =>
+      const result = authAction("signIn", () =>
         signInWithPopup(auth, provider)
       );
       return result;
@@ -111,6 +109,22 @@ const AuthProvider = ({ children }) => {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser || null);
+      if (currentUser) {
+        const user = { email: currentUser?.email };
+        console.log(user);
+        try {
+          const res = axiosPublic.post("/jwt", user);
+          const token = res?.data?.token;
+          if (token) {
+            localStorage.setItem("access-token", token);
+          }
+        } catch (error) {
+          console.error(error);
+        }
+      } else {
+        axiosPublic.post("/logout");
+        localStorage.removeItem("access-token");
+      }
       setLoading(false);
     });
     return () => {
@@ -131,7 +145,9 @@ const AuthProvider = ({ children }) => {
     signOut: signOutUser,
   };
   return (
-    <AuthContext.Provider value={authInfo}>{children}</AuthContext.Provider>
+    <AuthContext.Provider value={authInfo}>
+      {!loading && children}
+    </AuthContext.Provider>
   );
 };
 
