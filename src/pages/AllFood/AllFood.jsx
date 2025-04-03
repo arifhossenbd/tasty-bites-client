@@ -6,6 +6,7 @@ import DataStatus from "../../component/DataStatus/DataStatus";
 const AllFood = () => {
   const [foods, setFoods] = useState([]);
   const { loading, error, getPublicData } = useApi();
+
   const fetchFoods = async () => {
     const result = await getPublicData("/foods");
     if (!result.error) {
@@ -14,6 +15,7 @@ const AllFood = () => {
       setFoods([]);
     }
   };
+
   useEffect(() => {
     fetchFoods();
   }, []);

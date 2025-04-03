@@ -2,7 +2,7 @@ import {Link} from "react-router-dom"
 const Food = ({ food }) => {
   // console.log(Object.keys(food).join(", "));
   const {
-    id,
+    _id,
     name,
     image,
     category,
@@ -14,7 +14,7 @@ const Food = ({ food }) => {
     purchaseCount,
   } = food;
   return (
-    <Link to={`/food/details/${id}`}>
+    <Link to={`/food/details/${_id}`}>
       <div className="card shadow hover:shadow-md rounded-none">
         <figure className="w-full h-56">
           <img src={image} className="w-full h-full" alt="" />

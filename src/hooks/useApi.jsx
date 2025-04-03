@@ -24,14 +24,13 @@ const useApi = () => {
           duration: 3000,
         });
       }
-      return response.data;
+      return response?.data;
     } catch (error) {
       let message =
         error.response?.data?.message ||
         error.message ||
         errorMessage ||
         "Something went wrong";
-        console.log(message, "from axios")
         setError(message)
       toast.error(message, {
         position: "top-center",

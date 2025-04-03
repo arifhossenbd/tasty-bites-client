@@ -7,6 +7,7 @@ import SignUp from "../pages/Auth/SignUp";
 import AddFood from "../pages/AddFood/AddFood";
 import AllFood from "../pages/AllFood/AllFood";
 import FoodDetails from "../pages/FoodDetails/FoodDetails";
+import PrivateRoutes from "./PrivateRoutes";
 
 const router = createBrowserRouter([
   {
@@ -28,8 +29,11 @@ const router = createBrowserRouter([
       },
       {
         path: "/food/details/:id",
-        element: <FoodDetails />,
-        loader: ({ params }) => fetch(`data.json/${params.id}`),
+        element: (
+          <PrivateRoutes>
+            <FoodDetails />
+          </PrivateRoutes>
+        ),
       },
       {
         path: "/sign-in",
