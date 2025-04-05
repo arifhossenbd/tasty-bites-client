@@ -5,6 +5,7 @@ import Loading from "../../component/Loading/Loading";
 import DataStatus from "../../component/DataStatus/DataStatus";
 import PrimaryBtn from "../../component/Buttons/PrimaryBtn";
 import SecondaryBtn from "../../component/Buttons/SecondaryBtn";
+import PageHeader from "../../component/PageHeader/PageHeader";
 
 const FoodDetails = () => {
   const { id } = useParams();
@@ -39,7 +40,17 @@ const FoodDetails = () => {
   } = food;
 
   return (
-    <div className="px-4 md:px-0 md:w-11/12 lg:w-10/12 mx-auto py-8">
+    <div className="px-4 md:px-0 md:w-11/12 lg:w-10/12 mx-auto">
+      <PageHeader
+        title={food.name}
+        subtitle={food.description.substring(0, 100) + "..."}
+        backgroundImage="https://plus.unsplash.com/premium_photo-1673108852141-e8c3c22a4a22?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+        breadcrumbs={[
+          { name: "Home", path: "/" },
+          { name: "Menu", path: "/foods" },
+          { name: food.name },
+        ]}
+      />
       <DataStatus
         isLoading={loading}
         error={error}
@@ -156,8 +167,8 @@ const FoodDetails = () => {
               {/* <button className="btn btn-outline border-stone-300 hover:bg-stone-50 w-full sm:w-auto">
                 Add to Wishlist
               </button> */}
-              <SecondaryBtn  disabled={quantity <= 0}>
-              {quantity > 0 ? "Add to Wishlist" : "Out of Stock"}
+              <SecondaryBtn disabled={quantity <= 0}>
+                {quantity > 0 ? "Add to Wishlist" : "Out of Stock"}
               </SecondaryBtn>
             </div>
           </div>
