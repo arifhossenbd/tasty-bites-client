@@ -3,7 +3,7 @@ import { FcGoogle } from "react-icons/fc";
 import { motion } from "framer-motion";
 import SocialBtn from "../../component/Buttons/SocialBtn";
 import { FaFacebook, FaGithub } from "react-icons/fa";
-import { authError } from "../../utils/authToast";
+import { authError } from "../../utils/AuthToast";
 
 const Social = () => {
   const { google, github, facebook } = useAuth();

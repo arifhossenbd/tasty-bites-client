@@ -1,11 +1,15 @@
 import { motion } from "framer-motion";
-const SecondaryBtn = ({ children, loading }) => {
+const SecondaryBtn = ({ children, loading, disabled, style }) => {
   return (
     <motion.button
-      className="btn shadow-none border-none rounded-none relative overflow-hidden w-full"
+      disabled={disabled || loading}
+      type="button"
+      className={`btn shadow-none border-none rounded-none relative overflow-hidden ${style} ${
+        disabled || loading ? "opacity-50 cursor-not-allowed" : ""
+      }`}
       initial="initial"
       variants={{
-        initial: { backgroundColor: "#e7e5e4", color:  "#57534e" },
+        initial: { backgroundColor: "#e7e5e4", color: "#57534e" },
         hover: {
           color: "#ffffff",
         },

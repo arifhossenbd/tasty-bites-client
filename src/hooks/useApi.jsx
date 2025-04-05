@@ -1,124 +1,57 @@
 import { useState } from "react";
 import useAxiosPublic from "./useAxiosPublic";
 import useAxiosSecure from "./useAxiosSecure";
-import toast from "react-hot-toast";
 
 const useApi = () => {
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null)
   const axiosPublic = useAxiosPublic();
   const axiosSecure = useAxiosSecure();
 
-  const apiCall = async (
-    requestFn,
-    successMessage = null,
-    errorMessage = null
-  ) => {
+  const apiCall = async (requestFn) => {
     try {
       setLoading(true);
-      setError(null)
       const response = await requestFn();
-      if (successMessage) {
-        toast.success(successMessage, {
-          position: "top-center",
-          duration: 3000,
-        });
-      }
       return response?.data;
     } catch (error) {
-      let message =
-        error.response?.data?.message ||
-        error.message ||
-        errorMessage ||
-        "Something went wrong";
-        setError(message)
-      toast.error(message, {
-        position: "top-center",
-        duration: 3000,
-      });
       console.error("API Error", error);
-      return { error: message };
+      return { error: error.message || "An error occurred" };
     } finally {
       setLoading(false);
     }
   };
 
   // POST Request
-  const createData = async (
-    endpoint,
-    data = {},
-    config = {},
-    successMessage = "Create successfully"
-  ) => {
-    return apiCall(
-      () => axiosSecure.post(endpoint, data, config),
-      successMessage,
-      "Failed to create data"
-    );
+  const createData = (endpoint, data = {}, config = {}) => {
+    return apiCall(() => axiosSecure.post(endpoint, data, config));
   };
 
   // Public GET Request
-  const getPublicData = async (endpoint, params = {}, config = {}) => {
-    return apiCall(
-      () => axiosPublic.get(endpoint, { params, ...config }),
-      null,
-      "Failed to fetch data"
-    );
+  const getPublicData = (endpoint, params = {}, config = {}) => {
+    return apiCall(() => axiosPublic.get(endpoint, { params, ...config }));
   };
 
   // Secure GET Request
-  const getSecureData = async (endpoint, params = {}, config = {}) => {
-    return apiCall(
-      () => axiosSecure.get(endpoint, { params, ...config }),
-      null,
-      "Failed to fetch data"
-    );
+  const getSecureData = (endpoint, params = {}, config = {}) => {
+    return apiCall(() => axiosSecure.get(endpoint, { params, ...config }));
   };
 
   // Full Update Data (PUT)
-  const updateData = async (
-    endpoint,
-    data = {},
-    config = {},
-    successMessage = "Updated successfully"
-  ) => {
-    return apiCall(
-      () => axiosSecure.put(endpoint, data, config),
-      successMessage,
-      "Failed to update data"
-    );
+  const updateData = (endpoint, data = {}, config = {}) => {
+    return apiCall(() => axiosSecure.put(endpoint, data, config));
   };
 
   // Partial Update Data (PATCH)
-  const partialUpdateData = async (
-    endpoint,
-    data = {},
-    config = {},
-    successMessage = "Updated successfully"
-  ) => {
-    return apiCall(
-      () => axiosSecure.patch(endpoint, data, config),
-      successMessage,
-      "Failed to partially update data"
-    );
+  const partialUpdateData = (endpoint, data = {}, config = {}) => {
+    return apiCall(() => axiosSecure.patch(endpoint, data, config));
   };
 
   // Delete Data
-  const deleteData = async (
-    endpoint,
-    config = {},
-    successMessage = "Deleted successfully"
-  ) => {
-    return apiCall(
-      () => axiosSecure.delete(endpoint, config),
-      successMessage,
-      "Failed to delete data"
-    );
+  const deleteData = (endpoint, config = {}) => {
+    return apiCall(() => axiosSecure.delete(endpoint, config));
   };
 
   return {
     loading,
-    error,
     createData,
     getPublicData,
     getSecureData,

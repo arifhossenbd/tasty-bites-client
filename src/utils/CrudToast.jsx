@@ -76,7 +76,7 @@ export const crudSuccess = (action, itemName = null) => {
       </div>
     </div>,
     {
-      duration: 2000,
+      duration: 3000,
       style: {
         ...baseStyle,
         background: "#f0fdf4",
@@ -105,7 +105,7 @@ export const crudError = (error = {}, customConfig = {}) => {
       </div>
     </div>,
     {
-      duration: 2000,
+      duration: 3000,
       style: {
         ...baseStyle,
         background: "#fef2f2",

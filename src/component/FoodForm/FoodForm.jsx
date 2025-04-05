@@ -35,7 +35,7 @@ const FoodForm = ({ onSubmit, btnText, header, food = {} }) => {
       }
       dismissCrudToast(toastId);
 
-      crudSuccess(btnText === "Add" ? "create" : "update", foodName);
+      crudSuccess(btnText === "Add" ? "create" : "update", foodData?.foodName);
       if (btnText === "Add") {
         form.reset();
       }

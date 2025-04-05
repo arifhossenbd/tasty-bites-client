@@ -9,7 +9,7 @@ const AllFood = () => {
 
   const fetchFoods = async () => {
     const result = await getPublicData("/foods");
-    if (!result.error) {
+    if (!result?.error) {
       setFoods(result?.data || []);
     } else {
       setFoods([]);

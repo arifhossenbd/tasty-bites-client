@@ -7,7 +7,7 @@ import {
   authError,
   authLoading,
   dismissAuthToast,
-} from "../../utils/authToast";
+} from "../../utils/AuthToast";
 
 const SignUp = () => {
   const { signUp, loading } = useAuth();

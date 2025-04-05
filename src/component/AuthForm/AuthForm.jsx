@@ -69,8 +69,8 @@ const AuthForm = ({ header, footer, fieldset, btnText, handleForm, loading }) =>
                 {showPassword ? <FaEyeSlash /> : <FaEye />}
               </button>
             </div>
-            <div className="pt-4">
-              <SecondaryBtn loading={loading} disabled={loading}>
+            <div className="pt-4 w-full">
+              <SecondaryBtn style="w-full" loading={loading} disabled={loading}>
                 {loading ?  <span className="loading loading-spinner"></span> : <span>{btnText}</span>}
               </SecondaryBtn>
             </div>

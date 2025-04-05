@@ -6,7 +6,7 @@ import {
   authLoading,
   authSuccess,
   dismissAuthToast,
-} from "../../utils/authToast";
+} from "../../utils/AuthToast";
 import {
   createUserWithEmailAndPassword,
   FacebookAuthProvider,
