@@ -26,9 +26,9 @@ const ErrorPage = () => {
           </p>
         )}
       </div>
-      <div>
+      <div className="flex items-center gap-2">
         <Link to={"/"}>
-          <PrimaryBtn btnText="Back to Home" />
+          <PrimaryBtn color="stone" btnText="Back to Home" />
         </Link>
       </div>
     </div>

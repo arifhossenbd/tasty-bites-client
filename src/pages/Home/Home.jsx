@@ -1,7 +1,9 @@
+import Test from "../../Test";
+
 const Home = () => {
     return (
         <div className="text-center">
-            Home
+            <Test/>
         </div>
     );
 };

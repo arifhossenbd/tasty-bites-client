@@ -7,7 +7,7 @@ const Main = () => {
   return (
     <AuthProvider>
         <Navbar/>
-      <div className="bg-stone-50">
+      <div className="bg-stone-50 py-6 md:py-8 lg:py-12">
         <Outlet />
       </div>
       <Footer/>

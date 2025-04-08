@@ -3,6 +3,7 @@ import { links } from "../../utils/links";
 import { transitionNoDelay } from "../../hooks/useTransition";
 import { FiArrowRightCircle } from "react-icons/fi";
 import { useAuth } from "../../hooks/useAuth";
+import { FaShoppingCart } from "react-icons/fa";
 
 const Navbar = () => {
   const { user, signOut, loading } = useAuth();
@@ -11,8 +12,8 @@ const Navbar = () => {
       <NavLink
         className={({ isActive }) =>
           isActive
-            ? `text-stone-500 ${transitionNoDelay}`
-            : `hover:text-stone-500 ${transitionNoDelay}`
+            ? `text-amber-500 ${transitionNoDelay}`
+            : `hover:text-amber-500 ${transitionNoDelay}`
         }
         to={link?.path}
       >
@@ -48,7 +49,7 @@ const Navbar = () => {
           </ul>
         </div>
         <div>
-          <NavLink to="/" className={`text-3xl font-yesterYear`}>
+          <NavLink to="/" className={`text-3xl font-yesterYear text-amber-400`}>
             Tasty Bites
           </NavLink>
         </div>
@@ -61,44 +62,34 @@ const Navbar = () => {
               <div
                 tabIndex={0}
                 role="button"
-                className="btn btn-ghost btn-circle"
+                className="btn btn-ghost btn-circle hover:bg-amber-50 group"
               >
                 <div className="indicator">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    {" "}
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
-                    />{" "}
-                  </svg>
-                  <span className="absolute -top-1/2 -right-1/2">8</span>
+                  <FaShoppingCart className="text-lg md:text-xl group-hover:text-amber-500 transition-all duration-200 ease-linear" />
+                  <span className="rounded-full w-5 h-5 bg-amber-500 text-white absolute -top-3 -right-4">
+                    0
+                  </span>
                 </div>
               </div>
               <div
                 tabIndex={0}
-                className="card card-compact dropdown-content bg-base-100 z-1 w-52 shadow"
+                className="dropdown-content bg-base-100 z-1 w-52 rounded-box shadow"
               >
                 <div className="card-body">
-                  <span className="text-lg font-bold">8 Items</span>
-                  <span className="text-info">Subtotal: $999</span>
-                  <div className="card-actions">
-                    <button className="btn btn-primary btn-block">
-                      View cart
+                  <span className="text-lg font-bold text-stone-500">
+                    Items
+                  </span>
+                  <span className="text-info">Subtotal: 0.00</span>
+                  <div className="card-actions mt-2">
+                    <button className="bg-amber-200 btn hover:bg-amber-100 text-amber-700 hover:text-amber-600 w-full transition-all duration-200 ease-in-out">
+                      View Cart
                     </button>
                   </div>
                 </div>
               </div>
             </div>
             {loading ? (
-              <div className="w-10 rounded-full bg-stone-500 h-10 skeleton"></div>
+              <div className="w-10 rounded-full bg-amber-500 h-10 skeleton"></div>
             ) : (
               <div>
                 {user ? (
@@ -109,7 +100,7 @@ const Navbar = () => {
                       className="btn btn-ghost btn-circle avatar"
                     >
                       {loading ? (
-                        <div className="w-10 rounded-full bg-stone-500 h-10 skeleton"></div>
+                        <div className="w-10 rounded-full bg-amber-500 h-10 skeleton"></div>
                       ) : (
                         <div className="w-10 rounded-full">
                           <img src={user?.photoURL} alt={user?.displayName} />
@@ -121,22 +112,64 @@ const Navbar = () => {
                       className="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm"
                     >
                       <li>
-                        <Link to="/my-foods">My Foods</Link>
+                        <NavLink
+                          className={({ isActive }) =>
+                            isActive
+                              ? `text-amber-500 ${transitionNoDelay}`
+                              : `hover:text-amber-500 ${transitionNoDelay}`
+                          }
+                          to="/add-food"
+                        >
+                          Add Food
+                        </NavLink>
                       </li>
                       <li>
-                        <Link to="/add-food">Add Food</Link>
+                        <NavLink
+                          className={({ isActive }) =>
+                            isActive
+                              ? `text-amber-500 ${transitionNoDelay}`
+                              : `hover:text-amber-500 ${transitionNoDelay}`
+                          }
+                          to="/my-foods"
+                        >
+                          My Foods
+                        </NavLink>
                       </li>
                       <li>
-                        <Link to="/my-orders">My Orders</Link>
+                        <NavLink
+                          className={({ isActive }) =>
+                            isActive
+                              ? `text-amber-500 ${transitionNoDelay}`
+                              : `hover:text-amber-500 ${transitionNoDelay}`
+                          }
+                          to="/my-orders"
+                        >
+                          My Orders
+                        </NavLink>
                       </li>
                       <li>
-                        <Link className="justify-between">
+                        <NavLink
+                          to="/profile"
+                          className={({ isActive }) =>
+                            isActive
+                              ? `text-amber-500 justify-between ${transitionNoDelay}`
+                              : `hover:text-amber-500 justify-between ${transitionNoDelay}`
+                          }
+                        >
                           Profile
                           <span className="badge">New</span>
-                        </Link>
+                        </NavLink>
                       </li>
                       <li>
-                        <button onClick={() => signOut()}>Sign Out</button>
+                        <Link>{user?.email}</Link>
+                      </li>
+                      <li>
+                        <button
+                          className="text-amber-500"
+                          onClick={() => signOut()}
+                        >
+                          Sign Out
+                        </button>
                       </li>
                     </ul>
                   </div>
@@ -144,10 +177,10 @@ const Navbar = () => {
                   <div>
                     <Link
                       to="/sign-in"
-                      className={`${transitionNoDelay} hover:text-stone-500 font-semibold flex items-center gap-1 group`}
+                      className={`${transitionNoDelay} hover:text-amber-500 font-semibold flex items-center gap-1 group`}
                     >
                       <FiArrowRightCircle
-                        className={`${transitionNoDelay} group-hover:translate-x-0 hover:text-stone-600 group-hover:opacity-100 -translate-x-1 opacity-0`}
+                        className={`${transitionNoDelay} group-hover:translate-x-0 hover:text-amber-600 group-hover:opacity-100 -translate-x-1 opacity-0`}
                       />
                       Sign In
                     </Link>

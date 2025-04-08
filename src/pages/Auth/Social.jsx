@@ -3,7 +3,6 @@ import { FcGoogle } from "react-icons/fc";
 import { motion } from "framer-motion";
 import SocialBtn from "../../component/Buttons/SocialBtn";
 import { FaFacebook, FaGithub } from "react-icons/fa";
-import { authError } from "../../utils/AuthToast";
 
 const Social = () => {
   const { google, github, facebook } = useAuth();
@@ -43,7 +42,7 @@ const Social = () => {
     >
       <div className="divider">OR</div>
       {socialProviders?.map(({ action, icon, text }, idx) => (
-        <SocialBtn key={idx} socialAction={() => handleSocialLogin(action)}>
+        <SocialBtn type="button" key={idx} socialAction={() => handleSocialLogin(action)}>
           <div className="flex items-center justify-center">
             {icon}
             {text}

@@ -1,14 +1,8 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { toast } from "react-hot-toast";
-import SecondaryBtn from "../Buttons/SecondaryBtn";
 import { useAuth } from "../../hooks/useAuth";
-import {
-  crudError,
-  crudLoading,
-  crudSuccess,
-  dismissCrudToast,
-} from "../../utils/CrudToast";
+import PrimaryBtn from "../Buttons/PrimaryBtn";
+import { crudError } from "../../utils/CrudToast";
 
 const FoodForm = ({ onSubmit, btnText, header, food = {} }) => {
   const [loading, setLoading] = useState(false);
@@ -19,43 +13,20 @@ const FoodForm = ({ onSubmit, btnText, header, food = {} }) => {
   const handleForm = async (e) => {
     e.preventDefault();
     setLoading(true);
-    const toastId = crudLoading(btnText === "Add" ? "create" : "update");
     const form = e.target;
     const formData = new FormData(form);
     const foodData = Object.fromEntries(formData.entries());
 
     try {
-      const result = await onSubmit({
+      await onSubmit({
         ...foodData,
         addedBy: { name: user?.displayName, email: user?.email },
       });
-
-      if (!result) {
-        throw new Error("No response from server");
-      }
-      dismissCrudToast(toastId);
-
-      crudSuccess(btnText === "Add" ? "create" : "update", foodData?.foodName);
-      if (btnText === "Add") {
-        form.reset();
-      }
+      form.reset();
     } catch (error) {
-      dismissCrudToast(toastId);
-
-      // handle different type error
-      let errorConfig = {};
-      if (error.message.includes("exist")) {
-        errorConfig = { type: "conflict" };
-      } else if (error.message.includes("found")) {
-        errorConfig = { type: "notFound" };
-      } else if (error.message.includes("server")) {
-        errorConfig = { type: "serverError" };
-      }
-      crudError(error, {
-        ...errorConfig,
-        message:
-          error.message || `Failed to ${btnText.toLowerCase()} food item`,
-      });
+      console.error(error);
+      crudError(error)
+      throw error;
     } finally {
       setLoading(false);
     }
@@ -82,7 +53,9 @@ const FoodForm = ({ onSubmit, btnText, header, food = {} }) => {
           <fieldset className="fieldset space-y-3">
             {/* 🍔 Food Name */}
             <div>
-              <label className="label font-semibold">🍽️ Food Name</label>
+              <label className="label font-semibold text-sm pb-1">
+                🍽️ Food Name
+              </label>
               <motion.input
                 initial={{ opacity: 0, backgroundColor: "#a8a29E" }}
                 animate={{ opacity: 1, backgroundColor: "#ffffff" }}
@@ -105,7 +78,9 @@ const FoodForm = ({ onSubmit, btnText, header, food = {} }) => {
 
             {/* 🖼️ Food Image */}
             <div>
-              <label className="label font-semibold">📸 Food Image URL</label>
+              <label className="label font-semibold text-sm pb-1">
+                📸 Food Image URL
+              </label>
               <motion.input
                 initial={{ opacity: 0, backgroundColor: "#a8a29E" }}
                 animate={{ opacity: 1, backgroundColor: "#ffffff" }}
@@ -128,7 +103,9 @@ const FoodForm = ({ onSubmit, btnText, header, food = {} }) => {
 
             {/* 🍱 Category */}
             <div>
-              <label className="label font-semibold">🍕 Food Category</label>
+              <label className="label font-semibold text-sm pb-1">
+                🍕 Food Category
+              </label>
               <motion.select
                 initial={{ opacity: 0, backgroundColor: "#a8a29E" }}
                 animate={{ opacity: 1, backgroundColor: "#ffffff" }}
@@ -153,7 +130,9 @@ const FoodForm = ({ onSubmit, btnText, header, food = {} }) => {
 
             {/* 🔢 Quantity */}
             <div>
-              <label className="label font-semibold">🔢 Quantity</label>
+              <label className="label font-semibold text-sm pb-1">
+                🔢 Quantity
+              </label>
               <motion.input
                 initial={{ opacity: 0, backgroundColor: "#a8a29E" }}
                 animate={{ opacity: 1, backgroundColor: "#ffffff" }}
@@ -178,7 +157,9 @@ const FoodForm = ({ onSubmit, btnText, header, food = {} }) => {
 
             {/* 💰 Price */}
             <div>
-              <label className="label font-semibold">💰 Price ($)</label>
+              <label className="label font-semibold text-sm pb-1">
+                💰 Price ($)
+              </label>
               <motion.input
                 initial={{ opacity: 0, backgroundColor: "#a8a29E" }}
                 animate={{ opacity: 1, backgroundColor: "#ffffff" }}
@@ -202,7 +183,7 @@ const FoodForm = ({ onSubmit, btnText, header, food = {} }) => {
 
             {/* 🌍 Food Origin */}
             <div>
-              <label className="label font-semibold">
+              <label className="label font-semibold text-sm pb-1">
                 🌍 Food Origin (Country)
               </label>
               <motion.input
@@ -227,7 +208,9 @@ const FoodForm = ({ onSubmit, btnText, header, food = {} }) => {
 
             {/* 📖 Description */}
             <div>
-              <label className="label font-semibold">📖 Description</label>
+              <label className="label font-semibold text-sm pb-1">
+                📖 Description
+              </label>
               <motion.textarea
                 initial={{ opacity: 0, backgroundColor: "#a8a29E" }}
                 animate={{ opacity: 1, backgroundColor: "#ffffff" }}
@@ -249,7 +232,9 @@ const FoodForm = ({ onSubmit, btnText, header, food = {} }) => {
 
             {/* 📧 Email (Auto-filled, Not Editable) */}
             <div>
-              <label className="label font-semibold">📧 Your Email</label>
+              <label className="label font-semibold text-sm pb-1">
+                📧 Your Email
+              </label>
               {authLoading ? (
                 <div className="skeleton h-12 w-full"></div>
               ) : (
@@ -273,13 +258,19 @@ const FoodForm = ({ onSubmit, btnText, header, food = {} }) => {
 
             {/* 🛒 Submit Button (Same as AuthForm) */}
             <div className="pt-4">
-              <SecondaryBtn>
-                {loading ? (
-                  <span className="loading loading-spinner"></span>
-                ) : (
-                  <span>{btnText} Food 🛒</span>
-                )}
-              </SecondaryBtn>
+              <PrimaryBtn
+                type="submit"
+                color="stone"
+                style="w-full"
+                disabled={loading}
+                btnText={
+                  loading ? (
+                    <span className="loading loading-dots"></span>
+                  ) : (
+                    <span>{btnText} Food 🛒</span>
+                  )
+                }
+              />
             </div>
           </fieldset>
         </form>

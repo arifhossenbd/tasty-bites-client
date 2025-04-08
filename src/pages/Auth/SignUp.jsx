@@ -3,11 +3,7 @@ import AuthForm from "../../component/AuthForm/AuthForm";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useAuth } from "../../hooks/useAuth";
-import {
-  authError,
-  authLoading,
-  dismissAuthToast,
-} from "../../utils/AuthToast";
+import { authError } from "../../utils/AuthToast";
 
 const SignUp = () => {
   const { signUp, loading } = useAuth();
@@ -18,16 +14,13 @@ const SignUp = () => {
   const handleSignUp = async (e) => {
     e.preventDefault();
     const form = e.target;
-    const toastId = authLoading("signUp");
     const formData = new FormData(form);
     const { photo, name, email, password } = Object.fromEntries(formData);
-
     const passwordRegex =
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()\-_=+{};:,<.>]).{8,}$/;
 
     // Early validation checks
     if (!passwordRegex.test(password)) {
-      dismissAuthToast(toastId);
       authError({
         message:
           "Password must contain: 8+ chars, 1 uppercase, 1 lowercase, 1 number, 1 symbol",
@@ -42,8 +35,6 @@ const SignUp = () => {
       if (error.code === "auth/email-already-in-use") {
         navigate("/sign-in");
       }
-    } finally {
-      dismissAuthToast(toastId);
     }
   };
   return (
@@ -70,7 +61,7 @@ const SignUp = () => {
         <fieldset className="fieldset space-y-2">
           <div>
             <label htmlFor="photo" className="label">
-              <span className=" flex items-center gap-2">
+              <span className="text-sm mb-1 flex items-center gap-2">
                 <FaCamera /> Profile Photo URL
               </span>
             </label>
@@ -94,7 +85,7 @@ const SignUp = () => {
           </div>
           <div>
             <label htmlFor="name" className="label">
-              <span className=" flex items-center gap-2">
+              <span className="text-sm mb-1 flex items-center gap-2">
                 <FaInfo /> Full Name
               </span>
             </label>
@@ -123,7 +114,7 @@ const SignUp = () => {
           Already have an account? Please{" "}
           <Link
             to="/sign-in"
-            className="link hover:text-stone-600 dark:text-stone-50"
+            className="link hover:text-amber-600 dark:text-stone-50"
           >
             Sign In
           </Link>

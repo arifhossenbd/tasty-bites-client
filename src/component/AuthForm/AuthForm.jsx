@@ -1,10 +1,17 @@
 import { motion } from "framer-motion";
 import { FaEnvelope, FaEye, FaEyeSlash, FaLock } from "react-icons/fa";
-import SecondaryBtn from "../Buttons/SecondaryBtn";
 import Social from "../../pages/Auth/Social";
 import { useState } from "react";
+import PrimaryBtn from "../Buttons/PrimaryBtn";
 
-const AuthForm = ({ header, footer, fieldset, btnText, handleForm, loading }) => {
+const AuthForm = ({
+  header,
+  footer,
+  fieldset,
+  btnText,
+  handleForm,
+  loading,
+}) => {
   const [showPassword, setShowPassword] = useState(false);
   return (
     <div className="py-4 md:py-8 lg:py-12">
@@ -20,7 +27,7 @@ const AuthForm = ({ header, footer, fieldset, btnText, handleForm, loading }) =>
             {fieldset}
             <div>
               <label htmlFor="email" className="label">
-                <span className=" flex items-center gap-2">
+                <span className="text-sm mb-1 flex items-center gap-2">
                   <FaEnvelope /> Email
                 </span>
               </label>
@@ -43,7 +50,7 @@ const AuthForm = ({ header, footer, fieldset, btnText, handleForm, loading }) =>
             </div>
             <div className="relative">
               <label className="label">
-                <span className=" flex items-center gap-2">
+                <span className="text-sm mb-1 flex items-center gap-2">
                   <FaLock /> Password
                 </span>
               </label>
@@ -63,6 +70,7 @@ const AuthForm = ({ header, footer, fieldset, btnText, handleForm, loading }) =>
                 placeholder="Enter your password"
               />
               <button
+                type="button"
                 className="text-lg md:text-xl absolute top-2/3 right-1 -translate-y-1/2"
                 onClick={() => setShowPassword(!showPassword)}
               >
@@ -70,9 +78,19 @@ const AuthForm = ({ header, footer, fieldset, btnText, handleForm, loading }) =>
               </button>
             </div>
             <div className="pt-4 w-full">
-              <SecondaryBtn style="w-full" loading={loading} disabled={loading}>
-                {loading ?  <span className="loading loading-spinner"></span> : <span>{btnText}</span>}
-              </SecondaryBtn>
+              <PrimaryBtn
+                color="stone"
+                style="w-full"
+                type="submit"
+                disabled={loading}
+                btnText={
+                  loading ? (
+                    <span className="loading loading-dots"></span>
+                  ) : (
+                    <span>{btnText}</span>
+                  )
+                }
+              />
             </div>
           </fieldset>
           <div>

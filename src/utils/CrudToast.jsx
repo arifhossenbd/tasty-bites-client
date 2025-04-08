@@ -53,13 +53,6 @@ const errorMessage = {
   },
 };
 
-const loadingMessage = {
-  create: "Creating...",
-  update: "Updating...",
-  patch: "Modifying...",
-  delete: "Deleting...",
-};
-
 export const crudSuccess = (action, itemName = null) => {
   const config = actionMessage[action] || {
     title: "Success",
@@ -87,7 +80,7 @@ export const crudSuccess = (action, itemName = null) => {
 };
 
 export const crudError = (error = {}, customConfig = {}) => {
-  const errorType = error.code || error.status || "default";
+  const errorType = error?.status || "default"; // 👈 Check status from apiCall return
   const defaultConfig = errorMessage[errorType] || errorMessage.default;
 
   const config = {
@@ -98,7 +91,7 @@ export const crudError = (error = {}, customConfig = {}) => {
 
   toast.error(
     <div className="flex items-center gap-3 text-stone-700">
-      <span className="text-lg mt-0 5">{config.icon}</span>
+      <span className="text-lg mt-0.5">{config.icon}</span>
       <div>
         <h2 className="text-lg font-bold">{config.title}</h2>
         <p className="text-sm">{config.message}</p>
@@ -111,19 +104,6 @@ export const crudError = (error = {}, customConfig = {}) => {
         background: "#fef2f2",
         borderColor: "#f87171",
       },
-    }
-  );
-};
-
-export const crudLoading = (action) => {
-  return toast.loading(
-    <div className="flex items-center gap-3 text-stone-700">
-      <span className="text-lg">⏳</span>
-      <p>{loadingMessage[action] || "Processing..."}</p>
-    </div>,
-    {
-      duration: 2000,
-      style: { ...baseStyle, background: "#fafaf9", borderColor: "#78716c" },
     }
   );
 };

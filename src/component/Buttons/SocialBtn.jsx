@@ -1,8 +1,9 @@
 import { motion } from "framer-motion";
 
-const SocialBtn = ({ children, socialAction }) => {
+const SocialBtn = ({ children, socialAction, type }) => {
   return (
     <motion.button
+      type={type}
       onClick={socialAction}
       initial={{ x: -100, opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}

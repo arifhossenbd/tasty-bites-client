@@ -2,17 +2,12 @@ import { FaUtensils } from "react-icons/fa";
 import AuthForm from "../../component/AuthForm/AuthForm";
 import { useAuth } from "../../hooks/useAuth";
 import { Link } from "react-router-dom";
-import {
-  authError,
-  authLoading,
-  dismissAuthToast,
-} from "../../utils/AuthToast";
+import { authError } from "../../utils/AuthToast";
 const SignIn = () => {
   const { signIn, loading } = useAuth();
 
   const handleSignIn = async (e) => {
     e.preventDefault();
-    const toastId = authLoading("signIn");
     const form = e.target;
     const formData = new FormData(form);
     const { email, password } = Object.fromEntries(formData);
@@ -21,8 +16,6 @@ const SignIn = () => {
       await signIn(email, password);
     } catch (error) {
       authError(error);
-    } finally {
-      dismissAuthToast(toastId);
     }
   };
 
@@ -51,7 +44,7 @@ const SignIn = () => {
           Don't have an account? Please{" "}
           <Link
             to="/sign-up"
-            className="link hover:text-stone-600 dark:text-stone-50"
+            className="link hover:text-amber-600 dark:text-stone-50"
           >
             Sign Up
           </Link>

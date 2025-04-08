@@ -6,27 +6,30 @@ const PrimaryBtn = ({
   loading,
   type = "button",
   color = "amber",
-  disabled = null, style
+  disabled = null,
+  style,
 }) => {
   const colorVariants = {
     amber: {
-      initial: { backgroundColor: "#fef3c7", color: "#92400e" },
+      initial: { backgroundColor: "#fde68a", color: "#92400e" },
       hover: { color: "#ffffff" },
-      slide: { backgroundColor: "#d97706", borderColor: "#92400e" },
+      slide: { backgroundColor: "#f59e0b" },
     },
     stone: {
       initial: { backgroundColor: "#e7e5e4", color: "#57534e" },
       hover: { color: "#ffffff" },
-      slide: { backgroundColor: "#57534e", borderColor: "#57534e" },
+      slide: { backgroundColor: "#57534e" },
     },
   };
 
   return (
     <motion.button
       disabled={disabled || loading}
-      className={`btn relative overflow-hidden rounded-none font-normal uppercase tracking-widest ${style} ${
-        disabled || loading ? "opacity-50 cursor-not-allowed" : ""
-}`}
+      className={
+        disabled || loading
+          ? `${style} disabled:opacity-50 disabled:cursor-not-allowed p-2 font-normal uppercase tracking-widest`
+          : `${style} btn relative overflow-hidden rounded-none border-none shadow-none font-normal uppercase tracking-widest`
+      }
       initial="initial"
       variants={colorVariants[color]}
       whileHover={disabled ? "" : "hover"}
@@ -36,16 +39,14 @@ const PrimaryBtn = ({
     >
       <span className="relative z-10 px-4 py-2">{btnText}</span>
       <motion.span
-        className="absolute inset-0 z-0 border-b-2 border-r-2"
+        className="absolute inset-0 z-0"
         variants={{
           initial: {
             x: "-100%",
-            borderColor: "transparent", // No border initially
           },
           hover: {
             x: 0,
             backgroundColor: colorVariants[color].slide.backgroundColor,
-            borderColor: colorVariants[color].slide.borderColor,
           },
         }}
         transition={{ duration: 0.4, ease: "easeInOut" }}

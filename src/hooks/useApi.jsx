@@ -10,11 +10,10 @@ const useApi = () => {
   const apiCall = async (requestFn) => {
     try {
       setLoading(true);
-      const response = await requestFn();
-      return response?.data;
+      const res = await requestFn();
+      return res?.data?.data;
     } catch (error) {
-      console.error("API Error", error);
-      return { error: error.message || "An error occurred" };
+      console.error(error);
     } finally {
       setLoading(false);
     }
