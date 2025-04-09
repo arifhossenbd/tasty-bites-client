@@ -37,7 +37,7 @@ const Food = ({ food }) => {
           }}
         />
         {/* Category badge */}
-        <div className="absolute top-3 right-3 bg-amber-500 text-white px-3 py-1 text-xs font-semibold shadow-md">
+        <div className="absolute top-3 right-3 bg-yellow-500 text-white px-3 py-1 text-xs font-semibold shadow-md">
           {category}
         </div>
       </motion.figure>
@@ -50,7 +50,7 @@ const Food = ({ food }) => {
             {foodName}
           </h3>
           <div className="flex items-center justify-between mt-3">
-            <span className="text-xl font-bold text-amber-600">${price}</span>
+            <span className="text-xl font-bold text-yellow-600">${price}</span>
             <span
               className={`text-xs py-1 px-2 ${
                 quantity > 0

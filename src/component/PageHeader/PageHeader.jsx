@@ -35,12 +35,12 @@ const PageHeader = ({
                 {crumb.path ? (
                   <NavLink
                     to={crumb.path}
-                    className="hover:text-amber-300 transition-colors"
+                    className="hover:text-yellow-300 transition-colors"
                   >
                     {crumb.name}
                   </NavLink>
                 ) : (
-                  <span className="text-amber-300 font-medium">
+                  <span className="text-yellow-300 font-medium">
                     {crumb.name}
                   </span>
                 )}

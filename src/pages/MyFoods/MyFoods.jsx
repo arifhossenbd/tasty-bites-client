@@ -169,7 +169,7 @@ const MyFoods = () => {
                 setSearchTerm(e.target.value);
                 setPage(1);
               }}
-              className="w-full pl-10 pr-4 py-2 border rounded-full focus:outline-none focus:ring-2 focus:ring-amber-500"
+              className="w-full pl-10 pr-4 py-2 border rounded-full focus:outline-none focus:ring-2 focus:ring-yellow-500"
             />
             <FaSearch className="absolute left-3 top-3 text-gray-400" />
           </div>
@@ -196,11 +196,11 @@ const MyFoods = () => {
         {/* Food Items Table */}
         <div className="overflow-x-auto mt-4">
           <table className="min-w-full bg-white overflow-hidden">
-            <thead className="bg-amber-100">
+            <thead className="bg-yellow-100">
               <tr>
                 <th className="py-3 px-4 text-left">Image</th>
                 <th
-                  className="py-3 px-4 text-left cursor-pointer hover:bg-amber-200 transition-colors"
+                  className="py-3 px-4 text-left cursor-pointer hover:bg-yellow-200 transition-colors"
                   onClick={() => handleSort("foodName")}
                 >
                   <div className="flex items-center">
@@ -209,7 +209,7 @@ const MyFoods = () => {
                   </div>
                 </th>
                 <th
-                  className="py-3 px-4 text-left cursor-pointer hover:bg-amber-200 transition-colors"
+                  className="py-3 px-4 text-left cursor-pointer hover:bg-yellow-200 transition-colors"
                   onClick={() => handleSort("category")}
                 >
                   <div className="flex items-center">
@@ -218,7 +218,7 @@ const MyFoods = () => {
                   </div>
                 </th>
                 <th
-                  className="py-3 px-4 text-left cursor-pointer hover:bg-amber-200 transition-colors"
+                  className="py-3 px-4 text-left cursor-pointer hover:bg-yellow-200 transition-colors"
                   onClick={() => handleSort("price")}
                 >
                   <div className="flex items-center">
@@ -233,7 +233,7 @@ const MyFoods = () => {
               {filteredFoods.map((food) => (
                 <tr
                   key={food?._id}
-                  className="hover:bg-amber-50 transition-colors"
+                  className="hover:bg-yellow-50 transition-colors"
                 >
                   <td className="py-4 px-4">
                     <img
@@ -245,7 +245,7 @@ const MyFoods = () => {
                   <td className="py-4 px-4 font-medium">
                     <Link
                       to={`/food/details/${food?._id}`}
-                      className="text-amber-600 hover:text-amber-800 hover:underline transition-colors"
+                      className="text-yellow-600 hover:text-yellow-800 hover:underline transition-colors"
                     >
                       {food?.foodName}
                     </Link>
@@ -259,7 +259,7 @@ const MyFoods = () => {
                   <td className="py-4 px-4">
                     <div className="flex gap-4">
                       <button
-                        className="text-amber-600 hover:text-amber-800 hover:underline transition-colors"
+                        className="text-yellow-600 hover:text-yellow-800 hover:underline transition-colors"
                         title="Edit"
                       >
                         <FaEdit />
@@ -280,7 +280,7 @@ const MyFoods = () => {
 
         {/* Enhanced Pagination Controls */}
         {totalItems > 0 && (
-          <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mt-6">
+          <div className="flex flex-row justify-between items-center gap-4 mt-6">
             <div className="text-sm text-gray-600">
               Showing {(page - 1) * limit + 1} to{" "}
               {Math.min(page * limit, totalItems)} of {totalItems} items
@@ -290,7 +290,7 @@ const MyFoods = () => {
               <button
                 onClick={() => setPage(1)}
                 disabled={page === 1}
-                className="p-2 border rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-amber-50 transition-colors"
+                className="p-2 border rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-yellow-50 transition-colors"
                 title="First Page"
               >
                 <FaAngleDoubleLeft />
@@ -298,7 +298,7 @@ const MyFoods = () => {
               <button
                 onClick={() => setPage(Math.max(1, page - 1))}
                 disabled={page === 1}
-                className="p-2 border rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-amber-50 transition-colors"
+                className="p-2 border rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-yellow-50 transition-colors"
                 title="Previous Page"
               >
                 <FaAngleLeft />
@@ -311,8 +311,8 @@ const MyFoods = () => {
                     onClick={() => setPage(pageNumber)}
                     className={`w-10 h-10 flex items-center justify-center border rounded ${
                       page === pageNumber
-                        ? "bg-amber-500 text-white"
-                        : "hover:bg-amber-50"
+                        ? "bg-yellow-500 text-white"
+                        : "hover:bg-yellow-50"
                     } transition-colors`}
                   >
                     {pageNumber}
@@ -323,7 +323,7 @@ const MyFoods = () => {
               <button
                 onClick={() => setPage(Math.min(totalPages, page + 1))}
                 disabled={page === totalPages}
-                className="p-2 border rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-amber-50 transition-colors"
+                className="p-2 border rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-yellow-50 transition-colors"
                 title="Next Page"
               >
                 <FaAngleRight />
@@ -331,7 +331,7 @@ const MyFoods = () => {
               <button
                 onClick={() => setPage(totalPages)}
                 disabled={page === totalPages}
-                className="p-2 border rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-amber-50 transition-colors"
+                className="p-2 border rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-yellow-50 transition-colors"
                 title="Last Page"
               >
                 <FaAngleDoubleRight />

@@ -12,8 +12,8 @@ const Navbar = () => {
       <NavLink
         className={({ isActive }) =>
           isActive
-            ? `text-amber-500 ${transitionNoDelay}`
-            : `hover:text-amber-500 ${transitionNoDelay}`
+            ? `text-yellow-500 ${transitionNoDelay}`
+            : `hover:text-yellow-500 ${transitionNoDelay}`
         }
         to={link?.path}
       >
@@ -49,7 +49,7 @@ const Navbar = () => {
           </ul>
         </div>
         <div>
-          <NavLink to="/" className={`text-3xl font-yesterYear text-amber-400`}>
+          <NavLink to="/" className={`text-3xl font-yesterYear text-yellow-400`}>
             Tasty Bites
           </NavLink>
         </div>
@@ -62,11 +62,11 @@ const Navbar = () => {
               <div
                 tabIndex={0}
                 role="button"
-                className="btn btn-ghost btn-circle hover:bg-amber-50 group"
+                className="btn btn-ghost btn-circle hover:bg-yellow-50 group"
               >
                 <div className="indicator">
-                  <FaShoppingCart className="text-lg md:text-xl group-hover:text-amber-500 transition-all duration-200 ease-linear" />
-                  <span className="rounded-full w-5 h-5 bg-amber-500 text-white absolute -top-3 -right-4">
+                  <FaShoppingCart className="text-lg md:text-xl group-hover:text-yellow-500 transition-all duration-200 ease-linear" />
+                  <span className="rounded-full w-5 h-5 bg-yellow-500 text-white absolute -top-3 -right-4">
                     0
                   </span>
                 </div>
@@ -81,7 +81,7 @@ const Navbar = () => {
                   </span>
                   <span className="text-info">Subtotal: 0.00</span>
                   <div className="card-actions mt-2">
-                    <button className="bg-amber-200 btn hover:bg-amber-100 text-amber-700 hover:text-amber-600 w-full transition-all duration-200 ease-in-out">
+                    <button className="bg-yellow-200 btn hover:bg-yellow-100 text-yellow-700 hover:text-yellow-600 w-full transition-all duration-200 ease-in-out">
                       View Cart
                     </button>
                   </div>
@@ -89,7 +89,7 @@ const Navbar = () => {
               </div>
             </div>
             {loading ? (
-              <div className="w-10 rounded-full bg-amber-500 h-10 skeleton"></div>
+              <div className="w-10 rounded-full bg-yellow-500 h-10 skeleton"></div>
             ) : (
               <div>
                 {user ? (
@@ -100,7 +100,7 @@ const Navbar = () => {
                       className="btn btn-ghost btn-circle avatar"
                     >
                       {loading ? (
-                        <div className="w-10 rounded-full bg-amber-500 h-10 skeleton"></div>
+                        <div className="w-10 rounded-full bg-yellow-500 h-10 skeleton"></div>
                       ) : (
                         <div className="w-10 rounded-full">
                           <img src={user?.photoURL} alt={user?.displayName} />
@@ -115,8 +115,8 @@ const Navbar = () => {
                         <NavLink
                           className={({ isActive }) =>
                             isActive
-                              ? `text-amber-500 ${transitionNoDelay}`
-                              : `hover:text-amber-500 ${transitionNoDelay}`
+                              ? `text-yellow-500 ${transitionNoDelay}`
+                              : `hover:text-yellow-500 ${transitionNoDelay}`
                           }
                           to="/add-food"
                         >
@@ -127,8 +127,8 @@ const Navbar = () => {
                         <NavLink
                           className={({ isActive }) =>
                             isActive
-                              ? `text-amber-500 ${transitionNoDelay}`
-                              : `hover:text-amber-500 ${transitionNoDelay}`
+                              ? `text-yellow-500 ${transitionNoDelay}`
+                              : `hover:text-yellow-500 ${transitionNoDelay}`
                           }
                           to="/my-foods"
                         >
@@ -139,8 +139,8 @@ const Navbar = () => {
                         <NavLink
                           className={({ isActive }) =>
                             isActive
-                              ? `text-amber-500 ${transitionNoDelay}`
-                              : `hover:text-amber-500 ${transitionNoDelay}`
+                              ? `text-yellow-500 ${transitionNoDelay}`
+                              : `hover:text-yellow-500 ${transitionNoDelay}`
                           }
                           to="/my-orders"
                         >
@@ -152,8 +152,8 @@ const Navbar = () => {
                           to="/profile"
                           className={({ isActive }) =>
                             isActive
-                              ? `text-amber-500 justify-between ${transitionNoDelay}`
-                              : `hover:text-amber-500 justify-between ${transitionNoDelay}`
+                              ? `text-yellow-500 justify-between ${transitionNoDelay}`
+                              : `hover:text-yellow-500 justify-between ${transitionNoDelay}`
                           }
                         >
                           Profile
@@ -165,7 +165,7 @@ const Navbar = () => {
                       </li>
                       <li>
                         <button
-                          className="text-amber-500"
+                          className="text-yellow-500"
                           onClick={() => signOut()}
                         >
                           Sign Out
@@ -177,10 +177,10 @@ const Navbar = () => {
                   <div>
                     <Link
                       to="/sign-in"
-                      className={`${transitionNoDelay} hover:text-amber-500 font-semibold flex items-center gap-1 group`}
+                      className={`${transitionNoDelay} hover:text-yellow-500 font-semibold flex items-center gap-1 group`}
                     >
                       <FiArrowRightCircle
-                        className={`${transitionNoDelay} group-hover:translate-x-0 hover:text-amber-600 group-hover:opacity-100 -translate-x-1 opacity-0`}
+                        className={`${transitionNoDelay} group-hover:translate-x-0 hover:text-yellow-600 group-hover:opacity-100 -translate-x-1 opacity-0`}
                       />
                       Sign In
                     </Link>

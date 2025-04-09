@@ -5,12 +5,12 @@ const PrimaryBtn = ({
   onClick,
   loading,
   type = "button",
-  color = "amber",
+  color = "yellow",
   disabled = null,
   style,
 }) => {
   const colorVariants = {
-    amber: {
+    yellow: {
       initial: { backgroundColor: "#fde68a", color: "#92400e" },
       hover: { color: "#ffffff" },
       slide: { backgroundColor: "#f59e0b" },

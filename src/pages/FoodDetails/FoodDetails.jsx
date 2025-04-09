@@ -50,13 +50,13 @@ const FoodDetails = () => {
             />
           </figure>
           <div className="space-y-3">
-            <p className="px-3 py-1 text-sm font-medium bg-amber-100 text-amber-800 w-fit">
+            <p className="px-3 py-1 text-sm font-medium bg-yellow-100 text-yellow-800 w-fit">
               {food?.category}
             </p>
             <h1 className="text-3xl font-bold text-stone-900">
               {food?.foodName}
             </h1>
-            <p className="text-2xl font-bold text-amber-600">
+            <p className="text-2xl font-bold text-yellow-600">
               ${food?.price.toFixed(2)}
             </p>
 

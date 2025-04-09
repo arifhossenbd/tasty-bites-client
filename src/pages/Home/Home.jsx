@@ -1,9 +1,9 @@
-import Test from "../../Test";
+import Banner from "../../component/Banner/Banner";
 
 const Home = () => {
     return (
-        <div className="text-center">
-            <Test/>
+        <div>
+            <Banner/>
         </div>
     );
 };

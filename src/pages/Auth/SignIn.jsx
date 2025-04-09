@@ -44,7 +44,7 @@ const SignIn = () => {
           Don't have an account? Please{" "}
           <Link
             to="/sign-up"
-            className="link hover:text-amber-600 dark:text-stone-50"
+            className="link hover:text-yellow-600 dark:text-stone-50"
           >
             Sign Up
           </Link>
