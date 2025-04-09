@@ -38,12 +38,12 @@ const errorMessage = {
   },
   notFound: {
     title: "Not Found",
-    message: "The request item doesn't exist",
+    message: "The requested item doesn't exist",
     icon: "🔍",
   },
   conflict: {
     title: "Conflict",
-    message: "This item already exist",
+    message: "This item already exists",
     icon: "⚠️",
   },
   serverError: {
@@ -60,7 +60,8 @@ export const crudSuccess = (action, itemName = null) => {
     gotMessage: () => "Operation completed",
   };
 
-  toast.success(
+  // Store the toast ID and dismiss it after duration
+  const toastId = toast.success(
     <div className="flex items-center gap-3 text-stone-700">
       <span className="text-lg mt-0.5">{config.icon}</span>
       <div>
@@ -77,10 +78,15 @@ export const crudSuccess = (action, itemName = null) => {
       },
     }
   );
+
+  // Automatically dismiss after duration
+  setTimeout(() => {
+    toast.dismiss(toastId);
+  }, 3000);
 };
 
 export const crudError = (error = {}, customConfig = {}) => {
-  const errorType = error?.status || "default"; // 👈 Check status from apiCall return
+  const errorType = error?.status || "default";
   const defaultConfig = errorMessage[errorType] || errorMessage.default;
 
   const config = {
@@ -89,7 +95,8 @@ export const crudError = (error = {}, customConfig = {}) => {
     message: customConfig.message || error.message || defaultConfig.message,
   };
 
-  toast.error(
+  // Store the toast ID and dismiss it after duration
+  const toastId = toast.error(
     <div className="flex items-center gap-3 text-stone-700">
       <span className="text-lg mt-0.5">{config.icon}</span>
       <div>
@@ -106,9 +113,74 @@ export const crudError = (error = {}, customConfig = {}) => {
       },
     }
   );
+
+  // Automatically dismiss after duration
+  setTimeout(() => {
+    toast.dismiss(toastId);
+  }, 3000);
 };
 
-export const dismissCrudToast = toast.dismiss;
+export const confirmToast = ({
+  message,
+  confirmText = "Confirm",
+  cancelText = "Cancel",
+  onConfirm,
+  onCancel,
+}) => {
+  const toastId = `confirm-${Date.now()}`;
+
+  const toastInstance = toast(
+    (t) => (
+      <div className="flex flex-col gap-3 text-stone-700">
+        <div className="flex items-center gap-3">
+          <span className="text-lg mt-0.5">❓</span>
+          <div>
+            <h2 className="text-lg font-bold">Confirm Action</h2>
+            <p className="text-sm">{message}</p>
+          </div>
+        </div>
+        <div className="flex gap-2 justify-end mt-2">
+          <button
+            onClick={() => {
+              toast.dismiss(t.id);
+              onConfirm?.();
+              clearTimeout(timeoutId);
+            }}
+            className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 text-sm"
+          >
+            {confirmText}
+          </button>
+          <button
+            onClick={() => {
+              toast.dismiss(t.id);
+              onCancel?.();
+              clearTimeout(timeoutId);
+            }}
+            className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 text-sm"
+          >
+            {cancelText}
+          </button>
+        </div>
+      </div>
+    ),
+    {
+      duration: 10000,
+      style: {
+        ...baseStyle,
+        background: "#fff",
+        borderColor: "#fcd34d",
+      },
+      id: toastId,
+    }
+  );
+
+  const timeoutId = setTimeout(() => {
+    toast.dismiss(toastId);
+    onCancel?.();
+  }, 10000);
+
+  return toastInstance;
+};
 export const createToast = (itemName) => crudSuccess("create", itemName);
 export const updateToast = (itemName) => crudSuccess("update", itemName);
 export const patchToast = (itemName) => crudSuccess("patch", itemName);

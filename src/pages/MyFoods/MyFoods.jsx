@@ -4,10 +4,7 @@ import Loading from "../../component/Loading/Loading";
 import DataStatus from "../../component/DataStatus/DataStatus";
 import PageHeader from "../../component/PageHeader/PageHeader";
 import { useAuth } from "../../hooks/useAuth";
-import { Link } from "react-router-dom";
 import {
-  FaEdit,
-  FaTrash,
   FaSearch,
   FaSort,
   FaSortUp,
@@ -17,18 +14,19 @@ import {
   FaAngleRight,
   FaAngleDoubleRight,
 } from "react-icons/fa";
+import MyFood from "../MyFood/MyFood";
 
 const MyFoods = () => {
   const [allFoods, setAllFoods] = useState([]);
   const { user } = useAuth();
-  const { loading, error, getSecureData } = useApi();
-  const [ page, setPage ] = useState(1);
-  const [ limit, setLimit ] = useState(10);
-  const [ searchTerm, setSearchTerm ] = useState("");
-  const [ sortConfig, setSortConfig ] = useState({
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortConfig, setSortConfig] = useState({
     field: "foodName",
     direction: "asc",
   });
+  const { loading, error, getSecureData } = useApi();
 
   // Fetch all foods on component mount
   const fetchFoods = useCallback(async () => {
@@ -231,48 +229,12 @@ const MyFoods = () => {
             </thead>
             <tbody className="divide-y divide-gray-200">
               {filteredFoods.map((food) => (
-                <tr
+                <MyFood
                   key={food?._id}
-                  className="hover:bg-yellow-50 transition-colors"
-                >
-                  <td className="py-4 px-4">
-                    <img
-                      src={food?.foodImage}
-                      alt={food?.foodName}
-                      className="w-16 h-16 object-cover rounded"
-                    />
-                  </td>
-                  <td className="py-4 px-4 font-medium">
-                    <Link
-                      to={`/food/details/${food?._id}`}
-                      className="text-yellow-600 hover:text-yellow-800 hover:underline transition-colors"
-                    >
-                      {food?.foodName}
-                    </Link>
-                  </td>
-                  <td className="py-4 px-4">{food?.category}</td>
-                  <td className="py-4 px-4">
-                    {food?.price
-                      ? `$${parseFloat(food?.price).toFixed(2)}`
-                      : "$0.00"}
-                  </td>
-                  <td className="py-4 px-4">
-                    <div className="flex gap-4">
-                      <button
-                        className="text-yellow-600 hover:text-yellow-800 hover:underline transition-colors"
-                        title="Edit"
-                      >
-                        <FaEdit />
-                      </button>
-                      <button
-                        className="text-red-600 hover:text-red-800 hover:underline transition-colors"
-                        title="Delete"
-                      >
-                        <FaTrash />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
+                  food={food}
+                  setAllFoods={setAllFoods}
+                  allFoods={allFoods}
+                />
               ))}
             </tbody>
           </table>
