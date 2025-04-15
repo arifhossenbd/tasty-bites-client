@@ -9,7 +9,7 @@ const PageHeader = ({
   children,
 }) => {
   return (
-    <div className="relative h-64 w-full overflow-hidden bg-stone-900 mb-6 md:mb-8 lg:mb-12">
+    <div className="relative h-72 w-full overflow-hidden bg-stone-900 mb-6 md:mb-8 lg:mb-12">
       {/* Background Image (dynamic) */}
       {backgroundImage && (
         <img

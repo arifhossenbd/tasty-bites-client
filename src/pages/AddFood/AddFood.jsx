@@ -44,7 +44,7 @@ const AddFood = () => {
           { name: "My Foods", path: "/my-foods" },
           { name: "Add Food" },
         ]}
-        backgroundImage="/tasty-bites-images/banner/banner3.jpg"
+        backgroundImage="/tasty-bites-images/banner/banner4.jpg"
       />
       <div className="px-4 md:px-0">
         <FoodForm

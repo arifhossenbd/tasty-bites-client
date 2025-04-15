@@ -6,10 +6,14 @@ import { confirmToast, showErrorToast } from "../../utils/CrudToast";
 import useApi from "../../hooks/useApi";
 import toast from "react-hot-toast";
 import { useCart } from "../../hooks/useCart";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const Cart = ({ isOpen, onClose, onCheckoutSuccess }) => {
   const [quantities, setQuantities] = useState({});
   const { user } = useAuth();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const from = location?.state?.from || "/foods";
   const {
     totalPrice,
     totalQuantity,
@@ -87,6 +91,7 @@ const Cart = ({ isOpen, onClose, onCheckoutSuccess }) => {
         onClose();
         if (onCheckoutSuccess) {
           onCheckoutSuccess();
+          navigate(from, { replace: true });
         }
       }
     } else {

@@ -121,7 +121,7 @@ const AllFood = () => {
         title="Our Menu"
         subtitle="Discover our delicious offerings"
         breadcrumbs={[{ name: "Home", path: "/" }, { name: "Menu" }]}
-        backgroundImage="/tasty-bites-images/banner/banner6.jpg"
+        backgroundImage="/tasty-bites-images/banner/banner10.jpg"
       />
       <div className="px-4 md:px-0 md:w-11/12 lg:w-10/12 mx-auto">
         {/* Search and Sort Controls */}

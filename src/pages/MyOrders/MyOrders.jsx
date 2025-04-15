@@ -98,7 +98,7 @@ const MyOrders = () => {
           { name: "Menu", path: "/foods" },
           { name: "My Orders" },
         ]}
-        backgroundImage="/tasty-bites-images/banner/banner11.jpg"
+        backgroundImage="/tasty-bites-images/banner/banner9.jpg"
       />
 
       <div className="px-4 md:px-0 md:w-11/12 lg:w-10/12 mx-auto">
