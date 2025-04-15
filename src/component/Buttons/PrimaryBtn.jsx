@@ -1,8 +1,9 @@
 import { motion } from "framer-motion";
 
 const PrimaryBtn = ({
-  btnText,
-  onClick,
+  dataTip = "",
+  btnText = "",
+  onClick = ()=> {},
   loading,
   type = "button",
   color = "yellow",
@@ -24,11 +25,12 @@ const PrimaryBtn = ({
 
   return (
     <motion.button
+      data-tip={dataTip}
       disabled={disabled || loading}
       className={
         disabled || loading
           ? `${style} disabled:opacity-50 disabled:cursor-not-allowed p-2 font-normal uppercase tracking-widest`
-          : `${style} btn relative overflow-hidden rounded-none border-none shadow-none font-normal uppercase tracking-widest`
+          : `${style} btn relative overflow-hidden rounded-md border-none shadow-none font-normal uppercase tracking-widest`
       }
       initial="initial"
       variants={colorVariants[color]}

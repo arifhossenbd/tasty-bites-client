@@ -46,9 +46,9 @@ const SignUp = () => {
         <div className="w-full">
           <figure>
             <img
-              src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8cmVzdGF1cmFudCUyMGNoZWZ8ZW58MHx8MHx8fDA%3D&w=1000&q=80"
+              src="/tasty-bites-images/banner/banner5.jpg"
               alt="Chef Preparing Food"
-              className="w-full h-48 object-cover"
+              className="w-full h-48 object-cover rounded-t-md"
               loading="lazy"
             />
           </figure>
@@ -78,7 +78,7 @@ const SignUp = () => {
               id="photo"
               type="url"
               name="photo"
-              className="input w-full rounded-none outline-none focus:outline-none shadow-none border-none focus:placeholder-white"
+              className="input w-full rounded-md outline-none focus:outline-none shadow-none border-none focus:placeholder-white"
               placeholder="https://example/photo.jpg"
               pattern="https://.*"
             />
@@ -102,7 +102,7 @@ const SignUp = () => {
               id="name"
               type="text"
               name="name"
-              className="input w-full rounded-none outline-none focus:outline-none shadow-none border-none focus:placeholder-white"
+              className="input w-full rounded-md outline-none focus:outline-none shadow-none border-none focus:placeholder-white"
               placeholder="Arif Hossen"
               minLength="2"
             />

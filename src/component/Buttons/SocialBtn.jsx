@@ -9,7 +9,7 @@ const SocialBtn = ({ children, socialAction, type }) => {
       animate={{ x: 0, opacity: 1 }}
       whileHover={{ scale: 1.02 }}
       transition={{ duration: 0.5, delay: 0.1, ease: "easeInOut" }}
-      className="w-full btn rounded-none shadow-none border-none bg-stone-400 text-white hover:bg-stone-200 hover:text-stone-500"
+      className="w-full btn rounded-md shadow-none border-none bg-stone-400 text-white hover:bg-stone-200 hover:text-stone-500"
     >
       {children}
     </motion.button>

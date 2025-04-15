@@ -1,32 +1,58 @@
+import { useLocation, useNavigate } from "react-router-dom";
 import FoodForm from "../../component/FoodForm/FoodForm";
+import PageHeader from "../../component/PageHeader/PageHeader";
 import useApi from "../../hooks/useApi";
-import { createToast, crudError } from "../../utils/CrudToast";
+import { showErrorToast, showSuccessToast } from "../../utils/CrudToast";
 
 const AddFood = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const from = location?.state?.from || "/foods";
   const { createData } = useApi();
   const date = Date.now();
   const handleAddFood = async (data) => {
-    try {
-      const result = await createData("/food", {
-        ...data,
-        createAt: date,
-        updateAt: date,
-      });
-      if (result?.insertedId) {
-        createToast(data?.foodName);
-      }
-    } catch (error) {
-      console.error(error);
-      crudError(error);
+    const res = await createData("/add/food", {
+      ...data,
+      createAt: date,
+      updateAt: date,
+    });
+    if (res?.success) {
+      showSuccessToast(
+        "🍽️ Delicious Addition!",
+        {
+          image: data?.image,
+          category: data?.category,
+          name: data?.name,
+          price: Number(data?.price),
+        },
+        res?.message,
+        ""
+      );
+      navigate(from, { replace: true });
+    } else {
+      showErrorToast("⚠️ Oops! Something went wrong.", res.message);
     }
   };
   return (
     <div>
-      <FoodForm
-        style="card w-full max-w-lg mx-auto shadow-xl hover:shadow-2xl rounded-none bg-stone-50"
-        onSubmit={handleAddFood}
-        btnText="Add"
+      <PageHeader
+        title="Add New Food Item"
+        subtitle="Fill out the form below to add a new menu item to your restaurant"
+        breadcrumbs={[
+          { name: "Home", path: "/" },
+          { name: "All Food", path: "/foods" },
+          { name: "My Foods", path: "/my-foods" },
+          { name: "Add Food" },
+        ]}
+        backgroundImage="/tasty-bites-images/banner/banner3.jpg"
       />
+      <div className="px-4 md:px-0">
+        <FoodForm
+          style="card w-full max-w-xl mx-auto shadow-xl hover:shadow-2xl rounded-md bg-stone-50"
+          onSubmit={handleAddFood}
+          btnText="Add"
+        />
+      </div>
     </div>
   );
 };

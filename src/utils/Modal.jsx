@@ -6,7 +6,7 @@ const Modal = ({ isOpen, onClose, food, onUpdateSuccess }) => {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50 backdrop-blur-sm">
       {/* Modal container */}
-      <div className="bg-stone-50 rounded-lg shadow-xl w-full max-w-md max-h-[90vh] flex flex-col overflow-hidden">
+      <div className="bg-stone-50 rounded-md shadow-xl w-full max-w-xl max-h-[90vh] flex flex-col overflow-hidden">
         {/* Modal header */}
         <div className="border-b border-stone-200 p-4 md:p-6 sticky top-0 bg-stone-50 z-10">
           <div className="flex justify-between items-center">

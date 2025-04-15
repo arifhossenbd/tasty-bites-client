@@ -19,7 +19,7 @@ const AuthForm = ({
         initial={{ y: -100, opacity: 0, backgroundColor: "#F5F5F4" }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.5, delay: 0.5, ease: "easeInOut" }}
-        className="card w-full max-w-lg mx-auto rounded-none shadow-xl hover:shadow-2xl"
+        className="card w-full max-w-lg mx-auto rounded-md shadow-xl hover:shadow-2xl"
       >
         {header}
         <form onSubmit={handleForm} className="card-body">
@@ -44,7 +44,7 @@ const AuthForm = ({
                 id="email"
                 type="email"
                 name="email"
-                className="input w-full rounded-none outline-none focus:outline-none shadow-none border-none focus:placeholder:text-white"
+                className="input w-full rounded-md outline-none focus:outline-none shadow-none border-none focus:placeholder:text-white"
                 placeholder="example@email.com"
               />
             </div>
@@ -66,7 +66,7 @@ const AuthForm = ({
                 }}
                 type={showPassword ? "text" : "password"}
                 name="password"
-                className="input w-full rounded-none outline-none focus:outline-none shadow-none border-none focus:placeholder-white pr-8"
+                className="input w-full rounded-md outline-none focus:outline-none shadow-none border-none focus:placeholder-white pr-8"
                 placeholder="Enter your password"
               />
               <button

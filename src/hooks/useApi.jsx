@@ -10,43 +10,62 @@ const useApi = () => {
   const apiCall = async (requestFn) => {
     try {
       setLoading(true);
-      const res = await requestFn();
-      return res?.data?.data;
+      const response = await requestFn();
+      return {
+        success: true,
+        data: response?.data?.data,
+        message: response?.data?.message,
+      };
     } catch (error) {
       console.error(error);
+      return {
+        success: false,
+        error: error?.response?.data || true,
+        message: error?.response?.data?.message || "Something went wrong",
+      };
     } finally {
       setLoading(false);
     }
   };
 
   // POST Request
-  const createData = (endpoint, data = {}, config = {}) => {
-    return apiCall(() => axiosSecure.post(endpoint, data, config));
+  const createData = async (endpoint, data = {}) => {
+    const result = await apiCall(() => axiosSecure.post(endpoint, data));
+    return result;
   };
 
   // Public GET Request
-  const getPublicData = (endpoint, params = {}, config = {}) => {
-    return apiCall(() => axiosPublic.get(endpoint, { params, ...config }));
+  const getPublicData = async (endpoint, params = {}, config = {}) => {
+    const result = await apiCall(() =>
+      axiosPublic.get(endpoint, { params, ...config })
+    );
+    return result;
   };
 
   // Secure GET Request
-  const getSecureData = (endpoint, params = {}, config = {}) => {
-    return apiCall(() => axiosSecure.get(endpoint, { params, ...config }));
+  const getSecureData = async (endpoint, params = {}, config = {}) => {
+    const result = apiCall(() =>
+      axiosSecure.get(endpoint, { params, ...config })
+    );
+    return result;
   };
 
   // Full Update Data (PUT)
-  const updateData = (endpoint, data = {}, config = {}) => {
-    return apiCall(() => axiosSecure.put(endpoint, data, config));
+  const updateData = async (endpoint, data = {}, config = {}) => {
+    const result = apiCall(() => axiosSecure.put(endpoint, data, config));
+    return result;
   };
 
   // Partial Update Data (PATCH)
-  const partialUpdateData = (endpoint, data = {}, config = {}) => {
-    return apiCall(() => axiosSecure.patch(endpoint, data, config));
+  const partialUpdateData = async (endpoint, data = {}, config = {}) => {
+    const result = apiCall(() => axiosSecure.patch(endpoint, data, config));
+    return result;
   };
 
   // Delete Data
-  const deleteData = (endpoint, config = {}) => {
-    return apiCall(() => axiosSecure.delete(endpoint, config));
+  const deleteData = (endpoint) => {
+    const result = apiCall(() => axiosSecure.delete(endpoint));
+    return result;
   };
 
   return {

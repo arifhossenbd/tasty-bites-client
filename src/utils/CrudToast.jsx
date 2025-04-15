@@ -1,72 +1,46 @@
 import toast from "react-hot-toast";
 
 const baseStyle = {
-  padding: "16px",
+  padding: "10px",
   border: "1px solid",
   borderRadius: "8px",
   maxWidth: "420px",
 };
 
-const actionMessage = {
-  create: {
-    title: "Created Successfully",
-    icon: "🆕",
-    gotMessage: (itemName) => `${itemName || "Item"} was successfully created`,
-  },
-  update: {
-    title: "Updated Successfully",
-    icon: "🔄",
-    gotMessage: (itemName) => `${itemName || "Item"} was successfully updated`,
-  },
-  patch: {
-    title: "Modified Successfully",
-    icon: "🪡",
-    gotMessage: (itemName) => `${itemName || "Item"} was partially updated`,
-  },
-  delete: {
-    title: "Deleted Successfully",
-    icon: "🗑️",
-    gotMessage: (itemName) => `${itemName || "Item"} was successfully deleted`,
-  },
-};
+export const showSuccessToast = (
+  heading,
+  data = {},
+  defaultMsg,
+  icon = "✅"
+) => {
 
-const errorMessage = {
-  default: {
-    title: "Operation Failed",
-    message: "Something went wrong",
-    icon: "❌",
-  },
-  notFound: {
-    title: "Not Found",
-    message: "The requested item doesn't exist",
-    icon: "🔍",
-  },
-  conflict: {
-    title: "Conflict",
-    message: "This item already exists",
-    icon: "⚠️",
-  },
-  serverError: {
-    title: "Server Error",
-    message: "Please try again later",
-    icon: "🚨",
-  },
-};
-
-export const crudSuccess = (action, itemName = null) => {
-  const config = actionMessage[action] || {
-    title: "Success",
-    icon: "✔️",
-    gotMessage: () => "Operation completed",
-  };
-
-  // Store the toast ID and dismiss it after duration
-  const toastId = toast.success(
-    <div className="flex items-center gap-3 text-stone-700">
-      <span className="text-lg mt-0.5">{config.icon}</span>
-      <div>
-        <h2 className="text-lg font-bold">{config.title}</h2>
-        <p className="text-sm">{config.gotMessage(itemName)}</p>
+  const toastId = toast(
+    <div className="flex items-center gap-3 text-stone-700 w-full">
+      <span className="text-lg mt-0.5">{icon}</span>
+      <div className="flex flex-col gap-2">
+        <h2 className="text-lg font-bold">{heading}</h2>
+        {data ? (
+          <div className="flex items-center gap-2">
+            <figure className="h-20 w-20">
+              <img
+                className="w-full h-full rounded-md object-cover"
+                src={data?.image}
+                alt={data?.name}
+              />
+            </figure>
+            <div className="flex flex-col gap-1">
+              <p className="badge badge-warning w-fit rounded-full text-white text-sm">
+                {data?.category}
+              </p>
+              <h1 className="font-semibold text-stone-900">{data?.name}</h1>
+              <p className="text-sm font-semibold text-yellow-600">
+                ${data?.price ? Number(data?.price?.toFixed(2)) : 0.0}
+              </p>
+            </div>
+          </div>
+        ) : (
+          <p className="text-sm">{defaultMsg}</p>
+        )}
       </div>
     </div>,
     {
@@ -78,30 +52,18 @@ export const crudSuccess = (action, itemName = null) => {
       },
     }
   );
-
-  // Automatically dismiss after duration
   setTimeout(() => {
     toast.dismiss(toastId);
   }, 3000);
 };
 
-export const crudError = (error = {}, customConfig = {}) => {
-  const errorType = error?.status || "default";
-  const defaultConfig = errorMessage[errorType] || errorMessage.default;
-
-  const config = {
-    ...defaultConfig,
-    ...customConfig,
-    message: customConfig.message || error.message || defaultConfig.message,
-  };
-
-  // Store the toast ID and dismiss it after duration
-  const toastId = toast.error(
-    <div className="flex items-center gap-3 text-stone-700">
-      <span className="text-lg mt-0.5">{config.icon}</span>
+export const showErrorToast = (title, message, icon = "❌") => {
+  const toastId = toast(
+    <div className="flex items-center gap-3 text-stone-700 w-full">
+      <span className="text-lg mt-0.5">{icon}</span>
       <div>
-        <h2 className="text-lg font-bold">{config.title}</h2>
-        <p className="text-sm">{config.message}</p>
+        <h2 className="text-lg font-bold">{title}</h2>
+        <div className="text-sm">{message}</div>
       </div>
     </div>,
     {
@@ -113,11 +75,9 @@ export const crudError = (error = {}, customConfig = {}) => {
       },
     }
   );
-
-  // Automatically dismiss after duration
   setTimeout(() => {
     toast.dismiss(toastId);
-  }, 3000);
+  }, 5000);
 };
 
 export const confirmToast = ({
@@ -131,12 +91,12 @@ export const confirmToast = ({
 
   const toastInstance = toast(
     (t) => (
-      <div className="flex flex-col gap-3 text-stone-700">
+      <div className="flex flex-col gap-3 text-stone-700 w-full">
         <div className="flex items-center gap-3">
           <span className="text-lg mt-0.5">❓</span>
           <div>
             <h2 className="text-lg font-bold">Confirm Action</h2>
-            <p className="text-sm">{message}</p>
+            <div className="text-sm">{message}</div>
           </div>
         </div>
         <div className="flex gap-2 justify-end mt-2">
@@ -181,7 +141,3 @@ export const confirmToast = ({
 
   return toastInstance;
 };
-export const createToast = (itemName) => crudSuccess("create", itemName);
-export const updateToast = (itemName) => crudSuccess("update", itemName);
-export const patchToast = (itemName) => crudSuccess("patch", itemName);
-export const deleteToast = (itemName) => crudSuccess("delete", itemName);

@@ -23,7 +23,7 @@ const MyFoods = () => {
   const [limit, setLimit] = useState(10);
   const [searchTerm, setSearchTerm] = useState("");
   const [sortConfig, setSortConfig] = useState({
-    field: "foodName",
+    field: "name",
     direction: "asc",
   });
   const { loading, error, getSecureData } = useApi();
@@ -32,8 +32,8 @@ const MyFoods = () => {
   const fetchFoods = useCallback(async () => {
     try {
       const result = await getSecureData(`/my-foods?email=${user?.email}`);
-      if (result) {
-        setAllFoods(result);
+      if (result?.success) {
+        setAllFoods(result?.data);
       }
     } catch (err) {
       console.error(err);
@@ -54,7 +54,7 @@ const MyFoods = () => {
       const term = searchTerm.toLowerCase();
       result = result?.filter(
         (food) =>
-          food?.foodName?.toLowerCase().includes(term) ||
+          food?.name?.toLowerCase().includes(term) ||
           food?.category?.toLowerCase().includes(term)
       );
     }
@@ -144,18 +144,17 @@ const MyFoods = () => {
       data={filteredFoods || filteredFoods}
       onRetry={fetchFoods}
     >
+      <PageHeader
+        title="My Foods"
+        subtitle="Manage your food items"
+        breadcrumbs={[
+          { name: "Home", path: "/" },
+          { name: "Menu", path: "/foods" },
+          { name: "My Foods" },
+        ]}
+        backgroundImage="/tasty-bites-images/banner/banner8.jpg"
+      />
       <div className="px-4 md:px-0 md:w-11/12 lg:w-10/12 mx-auto">
-        <PageHeader
-          title="My Foods"
-          subtitle="Manage your food items"
-          breadcrumbs={[
-            { name: "Home", path: "/" },
-            { name: "Menu", path: "/foods" },
-            { name: "My Foods" },
-          ]}
-          backgroundImage="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80"
-        />
-
         {/* Search and Limit Controls */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 my-6">
           <div className="relative w-full md:w-64">
@@ -199,11 +198,11 @@ const MyFoods = () => {
                 <th className="py-3 px-4 text-left">Image</th>
                 <th
                   className="py-3 px-4 text-left cursor-pointer hover:bg-yellow-200 transition-colors"
-                  onClick={() => handleSort("foodName")}
+                  onClick={() => handleSort("name")}
                 >
                   <div className="flex items-center">
                     Name
-                    {sortIcons("foodName")}
+                    {sortIcons("name")}
                   </div>
                 </th>
                 <th
@@ -242,7 +241,7 @@ const MyFoods = () => {
 
         {/* Enhanced Pagination Controls */}
         {totalItems > 0 && (
-          <div className="flex flex-row justify-between items-center gap-4 mt-6">
+          <div className="flex flex-row flex-wrap justify-between items-center gap-4 mt-6">
             <div className="text-sm text-gray-600">
               Showing {(page - 1) * limit + 1} to{" "}
               {Math.min(page * limit, totalItems)} of {totalItems} items

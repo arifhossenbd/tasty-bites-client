@@ -5,8 +5,8 @@ import PrimaryBtn from "../../component/Buttons/PrimaryBtn";
 const Food = ({ food }) => {
   const {
     _id,
-    foodName,
-    foodImage,
+    name,
+    image,
     category,
     price,
     quantity,
@@ -16,7 +16,7 @@ const Food = ({ food }) => {
 
   return (
     <motion.div
-      className="card flex flex-col h-full bg-white border border-stone-200 rounded-none overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300"
+      className="card flex flex-col h-full bg-white border border-stone-200 rounded-md overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300"
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       whileHover={{
@@ -27,8 +27,8 @@ const Food = ({ food }) => {
       {/* Image section */}
       <motion.figure className="relative h-56 overflow-hidden">
         <motion.img
-          src={foodImage}
-          alt={foodName}
+          src={image}
+          alt={name}
           className="w-full h-full object-cover"
           initial={{ scale: 1 }}
           whileHover={{
@@ -37,8 +37,8 @@ const Food = ({ food }) => {
           }}
         />
         {/* Category badge */}
-        <div className="absolute top-3 right-3 bg-yellow-500 text-white px-3 py-1 text-xs font-semibold shadow-md">
-          {category}
+        <div className="absolute top-3 right-3 bg-blue-100 text-blue-500 px-3 py-1 text-xs font-semibold shadow-md rounded-full">
+          {food?.category}
         </div>
       </motion.figure>
 
@@ -47,12 +47,12 @@ const Food = ({ food }) => {
         {/* Title and price */}
         <div className="flex-grow">
           <h3 className="text-lg font-bold text-stone-800 mb-2 line-clamp-2">
-            {foodName}
+            {name}
           </h3>
           <div className="flex items-center justify-between mt-3">
             <span className="text-xl font-bold text-yellow-600">${price}</span>
             <span
-              className={`text-xs py-1 px-2 ${
+              className={`text-xs py-1 px-2 rounded-full ${
                 quantity > 0
                   ? "bg-green-100 text-green-800"
                   : "bg-red-100 text-red-800"

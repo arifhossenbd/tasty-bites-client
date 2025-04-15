@@ -9,7 +9,7 @@ import {
   FaAngleDoubleRight,
   FaAngleLeft,
   FaAngleRight,
-  FaSearch
+  FaSearch,
 } from "react-icons/fa";
 const AllFood = () => {
   const [allFoods, setAllFoods] = useState([]);
@@ -18,17 +18,15 @@ const AllFood = () => {
   const [limit, setLimit] = useState(10);
   const [searchTerm, setSearchTerm] = useState("");
   const [sortConfig, setSortConfig] = useState({
-    field: "foodName",
+    field: "name",
     direction: "asc",
   });
 
   // Fetch all foods on component mount
   const fetchFoods = useCallback(async () => {
     try {
-      const result = await getPublicData("/foods");
-      if (result) {
-        setAllFoods(result);
-      }
+      const response = await getPublicData("/foods");
+      setAllFoods(response?.data);
     } catch (err) {
       console.error(err);
       throw err;
@@ -48,7 +46,7 @@ const AllFood = () => {
       const term = searchTerm.toLowerCase();
       result = result?.filter(
         (food) =>
-          food?.foodName?.toLowerCase().includes(term) ||
+          food?.name?.toLowerCase().includes(term) ||
           food?.category?.toLowerCase().includes(term)
       );
     }
@@ -119,14 +117,13 @@ const AllFood = () => {
       onRetry={fetchFoods}
       emptyMessage="No food items available"
     >
+      <PageHeader
+        title="Our Menu"
+        subtitle="Discover our delicious offerings"
+        breadcrumbs={[{ name: "Home", path: "/" }, { name: "Menu" }]}
+        backgroundImage="/tasty-bites-images/banner/banner6.jpg"
+      />
       <div className="px-4 md:px-0 md:w-11/12 lg:w-10/12 mx-auto">
-        <PageHeader
-          title="Our Menu"
-          subtitle="Discover our delicious offerings"
-          breadcrumbs={[{ name: "Home", path: "/" }, { name: "Menu" }]}
-          backgroundImage="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80"
-        />
-
         {/* Search and Sort Controls */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 my-6">
           <div className="relative w-full md:w-64">
@@ -144,7 +141,7 @@ const AllFood = () => {
           </div>
 
           {/* Sort by Dropdown */}
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <select
               value={sortConfig.field}
               onChange={(e) => {
@@ -153,7 +150,7 @@ const AllFood = () => {
               }}
               className="border rounded px-2 py-1 text-sm"
             >
-              <option value="foodName">Sort by Name</option>
+              <option value="name">Sort by Name</option>
               <option value="price">Sort by Price</option>
               <option value="category">Sort by Category</option>
             </select>
@@ -182,13 +179,13 @@ const AllFood = () => {
         </div>
         {/* Enhanced Pagination Controls */}
         {totalItems > 0 && (
-          <div className="flex flex-row justify-between items-center gap-4 mt-6">
+          <div className="flex flex-row justify-between flex-wrap items-center gap-4 mt-6">
             <div className="text-sm text-gray-600">
               Showing {(page - 1) * limit + 1} to{" "}
               {Math.min(page * limit, totalItems)} of {totalItems} items
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center flex-wrap gap-2">
               <button
                 onClick={() => setPage(1)}
                 disabled={page === 1}
@@ -206,12 +203,12 @@ const AllFood = () => {
                 <FaAngleLeft />
               </button>
 
-              <div className="flex items-center gap-1">
-                {paginationRange.map((pageNumber) => (
+              <div className="flex items-center flex-wrap gap-1">
+                {paginationRange?.map((pageNumber) => (
                   <button
                     key={pageNumber}
                     onClick={() => setPage(pageNumber)}
-                    className={`w-10 h-10 flex items-center justify-center border rounded ${
+                    className={`w-10 h-10 flex flex-wrap items-center justify-center border rounded ${
                       page === pageNumber
                         ? "bg-yellow-500 text-white"
                         : "hover:bg-yellow-50"

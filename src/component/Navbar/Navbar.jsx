@@ -4,9 +4,14 @@ import { transitionNoDelay } from "../../hooks/useTransition";
 import { FiArrowRightCircle } from "react-icons/fi";
 import { useAuth } from "../../hooks/useAuth";
 import { FaShoppingCart } from "react-icons/fa";
+import Cart from "../../pages/Cart/Cart";
+import { useState } from "react";
+import { useCart } from "../../hooks/useCart";
 
 const Navbar = () => {
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const { user, signOut, loading } = useAuth();
+  const { totalQuantity, totalPrice } = useCart();
   const link = links?.map((link) => (
     <li key={link.id}>
       <NavLink
@@ -22,8 +27,8 @@ const Navbar = () => {
     </li>
   ));
   return (
-    <div className="">
-      <div className="navbar bg-base-100 shadow-sm flex items-center justify-between gap-2 md:gap-0 px-4 md:px-0 md:w-11/12 lg:w-10/12 mx-auto">
+    <div className="fixed z-50 w-full bg-base-100 shadow-sm">
+      <div className="navbar flex items-center justify-between gap-2 md:gap-0 px-4 md:px-0 md:w-11/12 lg:w-10/12 mx-auto">
         <div className="dropdown dropdown-hover lg:hidden">
           <div tabIndex={0} role="button" className="lg:hidden">
             <svg
@@ -49,7 +54,10 @@ const Navbar = () => {
           </ul>
         </div>
         <div>
-          <NavLink to="/" className={`text-3xl font-yesterYear text-yellow-400`}>
+          <NavLink
+            to="/"
+            className={`text-3xl font-yesterYear text-yellow-400`}
+          >
             Tasty Bites
           </NavLink>
         </div>
@@ -58,7 +66,11 @@ const Navbar = () => {
         </div>
         <div className="">
           <div className="flex items-center gap-2">
-            <div className="dropdown dropdown-end dropdown-hover relative">
+            <div
+              className={`dropdown dropdown-end relative ${
+                !isDrawerOpen && "dropdown-hover"
+              }`}
+            >
               <div
                 tabIndex={0}
                 role="button"
@@ -67,26 +79,40 @@ const Navbar = () => {
                 <div className="indicator">
                   <FaShoppingCart className="text-lg md:text-xl group-hover:text-yellow-500 transition-all duration-200 ease-linear" />
                   <span className="rounded-full w-5 h-5 bg-yellow-500 text-white absolute -top-3 -right-4">
-                    0
+                    {totalQuantity ? totalQuantity : 0}
                   </span>
                 </div>
               </div>
-              <div
-                tabIndex={0}
-                className="dropdown-content bg-base-100 z-1 w-52 rounded-box shadow"
-              >
-                <div className="card-body">
-                  <span className="text-lg font-bold text-stone-500">
-                    Items
-                  </span>
-                  <span className="text-info">Subtotal: 0.00</span>
-                  <div className="card-actions mt-2">
-                    <button className="bg-yellow-200 btn hover:bg-yellow-100 text-yellow-700 hover:text-yellow-600 w-full transition-all duration-200 ease-in-out">
-                      View Cart
-                    </button>
+              {!isDrawerOpen && (
+                <div
+                  tabIndex={0}
+                  className="dropdown-content bg-base-100 z-1 w-52 rounded-box shadow"
+                >
+                  <div className="card-body">
+                    <span className="text-lg font-bold text-stone-500">
+                      {totalQuantity ? totalQuantity : 0} Items
+                    </span>
+                    <span className="text-info">
+                      Subtotal: ${totalPrice ? totalPrice : 0.00}
+                    </span>
+                    <div className="card-actions mt-2">
+                      <button
+                        onClick={() => setIsDrawerOpen(true)}
+                        className="bg-yellow-200 btn hover:bg-yellow-100 text-yellow-700 hover:text-yellow-600 w-full transition-all duration-200 ease-in-out"
+                      >
+                        View Cart
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
+              )}
+
+              {isDrawerOpen && (
+                <Cart
+                  isOpen={isDrawerOpen}
+                  onClose={() => setIsDrawerOpen(false)}
+                />
+              )}
             </div>
             {loading ? (
               <div className="w-10 rounded-full bg-yellow-500 h-10 skeleton"></div>

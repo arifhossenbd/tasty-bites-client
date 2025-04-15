@@ -20,7 +20,7 @@ const PageHeader = ({
       )}
 
       {/* Content Overlay */}
-      <div className="absolute inset-0 flex flex-col justify-center px-4 md:px-8 lg:px-12">
+      <div className="absolute inset-0 flex flex-col justify-center px-4 md:px-0 md:w-11/12 lg:w-10/12 mx-auto">
         {/* Breadcrumb Navigation (dynamic) */}
         {breadcrumbs.length > 0 && (
           <motion.div

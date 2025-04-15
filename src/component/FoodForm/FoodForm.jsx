@@ -2,16 +2,12 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { useAuth } from "../../hooks/useAuth";
 import PrimaryBtn from "../Buttons/PrimaryBtn";
-import { crudError } from "../../utils/CrudToast";
-import { useLocation, useNavigate } from "react-router-dom";
+import { showErrorToast } from "../../utils/CrudToast";
 
 const FoodForm = ({ onSubmit, style, btnText, header, food = {} }) => {
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
-  const location = useLocation();
-  const from = location?.state?.from || "/foods";
   const { user, loading: authLoading } = useAuth();
-  let { foodName, foodImage, category, quantity, price, origin, description } =
+  let { name, image, category, quantity, price, origin, description } =
     food;
 
   const handleForm = async (e) => {
@@ -30,10 +26,9 @@ const FoodForm = ({ onSubmit, style, btnText, header, food = {} }) => {
         addedBy: { name: user?.displayName, email: user?.email },
       });
       form.reset();
-      navigate(from, { replace: true });
     } catch (error) {
       console.error(error);
-      crudError(error);
+      showErrorToast(error?.message);
       throw error;
     } finally {
       setLoading(false);
@@ -49,7 +44,7 @@ const FoodForm = ({ onSubmit, style, btnText, header, food = {} }) => {
       }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.5, ease: "easeInOut" }}
-      className={`card rounded-none ${style}`}
+      className={style}
     >
       {/* 🍽️ Header (Reusable) */}
       {header}
@@ -72,10 +67,10 @@ const FoodForm = ({ onSubmit, style, btnText, header, food = {} }) => {
                 color: "#ffffff",
                 transition: { duration: 0.2 },
               }}
-              id="foodName"
+              id="name"
               type="text"
-              name="foodName"
-              defaultValue={foodName || ""}
+              name="name"
+              defaultValue={name || ""}
               className="input w-full rounded-none outline-none focus:outline-none shadow-none border-none focus:placeholder:text-white"
               placeholder="Enter food name"
               required
@@ -97,10 +92,10 @@ const FoodForm = ({ onSubmit, style, btnText, header, food = {} }) => {
                 color: "#ffffff",
                 transition: { duration: 0.2 },
               }}
-              id="foodImage"
+              id="image"
               type="url"
-              name="foodImage"
-              defaultValue={foodImage || ""}
+              name="image"
+              defaultValue={image || ""}
               className="input w-full rounded-none outline-none focus:outline-none shadow-none border-none focus:placeholder:text-white"
               placeholder="Enter image URL"
               required
@@ -156,7 +151,6 @@ const FoodForm = ({ onSubmit, style, btnText, header, food = {} }) => {
               className="input w-full rounded-none outline-none focus:outline-none shadow-none border-none focus:placeholder:text-white"
               placeholder="Enter quantity"
               min="1"
-              max="1"
               required
             />
           </div>

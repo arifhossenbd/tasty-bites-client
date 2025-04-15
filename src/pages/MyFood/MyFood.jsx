@@ -1,41 +1,50 @@
 import useApi from "../../hooks/useApi";
 import { FaEdit, FaTrash } from "react-icons/fa";
-import { Link, replace, useLocation, useNavigate } from "react-router-dom";
-import {
-  confirmToast,
-  crudError,
-  deleteToast,
-  updateToast,
-} from "../../utils/CrudToast";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import Modal from "../../utils/Modal";
 import { useState } from "react";
+import {
+  confirmToast,
+  showErrorToast,
+  showSuccessToast,
+} from "../../utils/CrudToast";
 
 const MyFood = ({ food, setAllFoods, allFoods }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const navigate = useNavigate();
   const location = useLocation();
-  const from = location?.state?.from || "/";
+  const from = location?.state?.from || "/foods";
+  const navigate = useNavigate();
   const { deleteData, updateData } = useApi();
-  const { _id, foodImage, foodName, category, price } = food || {};
+  const { _id, image, name, category, price } = food || {};
 
   const handleEdit = () => {
     setIsModalOpen(true);
   };
 
   const handleUpdateSuccess = async (updatedFood) => {
-    try {
-      setAllFoods(
-        allFoods?.map((f) => (f?._id === updatedFood?._id ? updatedFood : f))
+    setAllFoods(
+      allFoods?.map((f) => (f?._id === updatedFood?._id ? updatedFood : f))
+    );
+    const res = await updateData(
+      `/update/food/${updatedFood?._id}`,
+      updatedFood,
+      {}
+    );
+    if (res?.success) {
+      showSuccessToast(
+        "🔄 Menu Updated Successfully!",
+        {
+          image: image,
+          category: category,
+          name: name,
+          price: Number(price),
+        },
+        res?.message,
+        ""
       );
-      const result = await updateData(`/food/${updatedFood?._id}`, updatedFood);
-      if (result?.modifiedCount > 0) {
-        updateToast(updatedFood?.foodName);
-        setIsModalOpen(false);
-        navigate(from, { replace: true });
-      }
-    } catch (error) {
-      console.error(error);
-      crudError(error);
+      setAllFoods(allFoods?.filter((food) => food._id !== id));
+    } else {
+      showErrorToast("⚠️ Update Failed", res?.message);
     }
   };
 
@@ -44,18 +53,28 @@ const MyFood = ({ food, setAllFoods, allFoods }) => {
       message: (
         <span>
           Are you sure you want to delete{" "}
-          <span className="font-semibold text-yellow-500">{foodName}</span>?
+          <span className="font-semibold text-yellow-500">{name}</span>?
         </span>
       ),
       confirmText: "Yes, delete",
       cancelText: "No, keep it",
       onConfirm: async () => {
-        try {
-          await deleteData(`/food/${id}`);
+        const res = await deleteData(`/delete/food/${id}`);
+        if (res?.success) {
+          showSuccessToast(
+            "🗑️ Food Item Removed",
+            {
+              image: image,
+              category: category,
+              name: name,
+              price: Number(price),
+            },
+            res?.message,
+            ""
+          );
           setAllFoods(allFoods?.filter((food) => food._id !== id));
-          deleteToast(foodName);
-        } catch (error) {
-          crudError(error);
+        }else{
+          showErrorToast("⚠️ Couldn’t Delete Item", res?.message)
         }
       },
     });
@@ -65,8 +84,8 @@ const MyFood = ({ food, setAllFoods, allFoods }) => {
     <tr key={_id} className="hover:bg-yellow-50 transition-colors">
       <td className="py-4 px-4">
         <img
-          src={foodImage}
-          alt={foodName}
+          src={image}
+          alt={name}
           className="w-16 h-16 object-cover rounded"
         />
       </td>
@@ -75,7 +94,7 @@ const MyFood = ({ food, setAllFoods, allFoods }) => {
           to={`/food/details/${_id}`}
           className="text-yellow-600 hover:text-yellow-800 hover:underline transition-colors"
         >
-          {foodName}
+          {name}
         </Link>
       </td>
       <td className="py-4 px-4">{category}</td>

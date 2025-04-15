@@ -28,7 +28,7 @@ const useAxiosSecure = () => {
         const status = error.response?.status;
         if (status === 401 || status === 403) {
           await signOut();
-          // navigate("/sign-in", { replace: true });
+          navigate("/sign-in", { replace: true });
         }
         return Promise.reject(error);
       }
