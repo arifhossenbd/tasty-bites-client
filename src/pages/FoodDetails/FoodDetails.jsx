@@ -1,27 +1,37 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import useApi from "../../hooks/useApi";
-import Loading from "../../component/Loading/Loading";
 import PrimaryBtn from "../../component/Buttons/PrimaryBtn";
 import PageHeader from "../../component/PageHeader/PageHeader";
 import { useAuth } from "../../hooks/useAuth";
 import Cart from "../Cart/Cart";
-import { showErrorToast } from "../../utils/CrudToast";
+import { showErrorToast, showSuccessToast } from "../../utils/CrudToast";
 import DataStatus from "../../component/DataStatus/DataStatus";
 import { useCart } from "../../hooks/useCart";
 
 const FoodDetails = () => {
   const { id } = useParams();
-  const [food, setFood] = useState({});
+  const [food, setFood] = useState(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
-  const { getSecureData, loading } = useApi();
+  const { createData, getSecureData, loading, error } = useApi();
   const { user } = useAuth();
   const { addToCart, isInCart, cartItems } = useCart();
+  const {
+    name,
+    image,
+    category,
+    origin,
+    quantity,
+    price,
+    description,
+    purchaseCount,
+    addedBy,
+  } = food || {};
 
   const userName = user?.displayName;
   const userEmail = user?.email;
-  const seller = food?.addedBy?.email === userEmail;
+  const seller = addedBy?.email === userEmail;
 
   const fetchFood = useCallback(async () => {
     try {
@@ -54,7 +64,7 @@ const FoodDetails = () => {
       return;
     }
 
-    if (food?.quantity <= 0) {
+    if (quantity <= 0) {
       showErrorToast("Out of Stock", "This item is currently unavailable.");
       return;
     }
@@ -62,14 +72,16 @@ const FoodDetails = () => {
     if (cartItems?.length <= 3) {
       const newItem = {
         foodId: id,
-        image: food?.image,
-        name: food?.name,
-        category: food?.category,
-        price: food?.price,
+        image: image,
+        name: name,
+        category: category,
+        price: price,
         quantity: 1,
-        availableQuantity: food?.quantity,
-        userName,
-        userEmail,
+        availableQuantity: quantity,
+        user: {
+          name: userName,
+          email: userEmail,
+        },
       };
 
       addToCart(newItem);
@@ -80,22 +92,53 @@ const FoodDetails = () => {
     }
   };
 
-  if (loading) return <Loading secondaryText="Details" />;
+  const handleAddToWishlist = async () => {
+    if (!food) return;
+    if (seller) {
+      showErrorToast(
+        "Action Restricted",
+        "We appreciate your product! As the seller, you can't add it to your wishlist."
+      );
 
-  const {
-    name,
-    image,
-    category,
-    origin,
-    quantity,
-    price,
-    description,
-    purchaseCount,
-    addedBy,
-  } = food;
+      return;
+    }
 
+    if (isInCart(id)) {
+      showErrorToast("Already in wishlist", "This item is already added.");
+      return;
+    }
+
+    if (quantity <= 0) {
+      showErrorToast("Out of Stock", "This item is currently unavailable.");
+      return;
+    }
+
+    const newItem = {
+      foodId: id,
+      image: image,
+      name: name,
+      category: category,
+      price: price,
+      quantity: quantity,
+      user: {
+        name: userName,
+        email: userEmail,
+      },
+    };
+    const res = await createData("/add/wishlist", newItem);
+    if (res?.success) {
+      showSuccessToast(
+        "Added to wishlist!",
+        newItem,
+        res?.message || `${name} has been added to your shopping cart.`,
+        ""
+      );
+    } else showErrorToast("Oops..", res?.message);
+  };
   return (
     <DataStatus
+      loading={loading}
+      error={error}
       data={food}
       btnText="Menu"
       path="/foods"
@@ -182,6 +225,7 @@ const FoodDetails = () => {
                   className="flex-1"
                 />
                 <PrimaryBtn
+                  onClick={handleAddToWishlist}
                   type="button"
                   style="btn btn-outline"
                   color="stone"

@@ -71,7 +71,7 @@ const CartProvider = ({ children }) => {
   const updateQuantity = useCallback(
     (foodId, quantity) => {
       const updatedCart = cartItems.map((item) =>
-        item.foodId === foodId ? { ...item, quantity } : item
+        item?.foodId === foodId ? { ...item, quantity } : item
       );
       syncCart(updatedCart);
     },
@@ -81,7 +81,7 @@ const CartProvider = ({ children }) => {
   const removeFromCart = useCallback(
     (data) => {
       const updatedCart = cartItems.filter(
-        (item) => item.foodId !== data.foodId
+        (item) => item?.foodId !== data.foodId
       );
       syncCart(updatedCart);
       showSuccessToast("Removed from Cart", data, "", "");

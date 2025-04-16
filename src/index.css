@@ -2,21 +2,40 @@
 body{
     font-family: 'Inter', sans-serif;
 }
-.perspective {
-    perspective: 1000px;
-  }
-  
-  .transform-style {
-    transform-style: preserve-3d;
-  }
-  
-  .backface-hidden {
-    backface-visibility: hidden;
-  }
-  
-  .rotate-y-180 {
-    transform: rotateY(180deg);
-  }
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply transition-colors duration-300;
+}
+
+/* For WebKit browsers (Chrome, Safari) */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #fff4f4;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #fcd34d; /* yellow-300 */
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #fbbf24; /* yellow-400 */
+}
+
+/* For Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #fcd34d #f1f1f1;
+}
   
 @tailwind base;
 @tailwind components;

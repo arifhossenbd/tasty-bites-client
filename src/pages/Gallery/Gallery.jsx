@@ -39,15 +39,11 @@ const Gallery = () => {
     setFlippedCards((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
-  const { getPublicData, loading } = useApi();
+  const { getPublicData, loading, error } = useApi();
 
   const fetchFoods = useCallback(async () => {
-    try {
-      const response = await getPublicData("/top/foods");
-      setFoods(response?.data);
-    } catch (err) {
-      console.error(err);
-    }
+    const response = await getPublicData("/top/foods");
+    setFoods(response?.data);
   }, [getPublicData]);
 
   useEffect(() => {
@@ -57,6 +53,7 @@ const Gallery = () => {
   return (
     <DataStatus
       loading={loading}
+      error={error}
       data={foods}
       btnText="Home"
       path="/"
@@ -73,75 +70,73 @@ const Gallery = () => {
         backgroundImage="/tasty-bites-images/banner/banner13.jpg"
       />
 
-<motion.div
- className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 px-4 md:px-0 md:w-11/12 lg:w-10/12 mx-auto my-10"
-  variants={containerVariants}
-  initial="hidden"
-  animate="show"
->
-{foods?.map((food, index) => {
-  const colSpan = index % 3 === 1 ? "sm:col-span-2" : "md:col-span-1";
-
-  return (
-    <motion.div
-      key={food?._id}
-      variants={itemVariants}
-      className={`w-full h-64 md:h-72 lg:h-80 ${colSpan}`}
-      onMouseEnter={() => toggleFlip(food?._id)}
-      onMouseLeave={() => toggleFlip(food?._id)}
-    >
       <motion.div
-        className="relative w-full h-full rounded-2xl"
-        style={{ transformStyle: "preserve-3d" }}
-        animate={{ rotateY: flippedCards[food?._id] ? 180 : 0 }}
-        transition={{ duration: 0.8 }}
+        className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 px-4 md:px-0 md:w-11/12 lg:w-10/12 mx-auto my-10"
+        variants={containerVariants}
+        initial="hidden"
+        animate="show"
       >
-        <motion.div
-          className="absolute w-full h-full rounded-2xl overflow-hidden shadow-lg bg-white/40 backdrop-blur-xl border border-white/30 hover:shadow-2xl transition-shadow duration-300"
-          style={{
-            backfaceVisibility: "hidden",
-            pointerEvents: flippedCards[food?._id] ? "none" : "auto",
-          }}
-        >
-          <Swiper
-            modules={[Navigation]}
-            navigation
-            className="rounded-2xl overflow-hidden"
-          >
-            <SwiperSlide>
-              <img
-                src={food?.image}
-                alt={food?.name}
-                className="w-full h-full object-cover"
-              />
-            </SwiperSlide>
-          </Swiper>
-        </motion.div>
-        <motion.div
-          className="absolute w-full h-full rounded-2xl p-4 md:p-6 shadow-2xl bg-white/30 backdrop-blur-md border border-white/30 flex flex-col justify-center items-center text-center"
-          style={{
-            transform: "rotateY(180deg)",
-            backfaceVisibility: "hidden",
-            pointerEvents: flippedCards[food?._id] ? "auto" : "none",
-          }}
-        >
-          <h3 className="text-lg md:text-xl font-semibold text-gray-800 mb-2">
-            {food?.name}
-          </h3>
-          <p className="text-gray-600 mb-4 text-sm md:text-base">
-            Price: ${food?.price}
-          </p>
-          <Link to={`/food/details/${food?._id}`}>
-            <PrimaryBtn color="stone" btnText="Details" />
-          </Link>
-        </motion.div>
+        {foods?.map((food, index) => {
+          const colSpan = index % 3 === 1 ? "sm:col-span-2" : "md:col-span-1";
+
+          return (
+            <motion.div
+              key={food?._id}
+              variants={itemVariants}
+              className={`w-full h-64 md:h-72 lg:h-80 ${colSpan}`}
+              onMouseEnter={() => toggleFlip(food?._id)}
+              onMouseLeave={() => toggleFlip(food?._id)}
+            >
+              <motion.div
+                className="relative w-full h-full rounded-2xl"
+                style={{ transformStyle: "preserve-3d" }}
+                animate={{ rotateY: flippedCards[food?._id] ? 180 : 0 }}
+                transition={{ duration: 0.8 }}
+              >
+                <motion.div
+                  className="absolute w-full h-full rounded-2xl overflow-hidden shadow-lg bg-white/40 backdrop-blur-xl border border-white/30 hover:shadow-2xl transition-shadow duration-300"
+                  style={{
+                    backfaceVisibility: "hidden",
+                    pointerEvents: flippedCards[food?._id] ? "none" : "auto",
+                  }}
+                >
+                  <Swiper
+                    modules={[Navigation]}
+                    navigation
+                    className="rounded-2xl overflow-hidden"
+                  >
+                    <SwiperSlide>
+                      <img
+                        src={food?.image}
+                        alt={food?.name}
+                        className="w-full h-full object-cover"
+                      />
+                    </SwiperSlide>
+                  </Swiper>
+                </motion.div>
+                <motion.div
+                  className="absolute w-full h-full rounded-2xl p-4 md:p-6 shadow-2xl bg-white/30 backdrop-blur-md border border-white/30 flex flex-col justify-center items-center text-center"
+                  style={{
+                    transform: "rotateY(180deg)",
+                    backfaceVisibility: "hidden",
+                    pointerEvents: flippedCards[food?._id] ? "auto" : "none",
+                  }}
+                >
+                  <h3 className="text-lg md:text-xl font-semibold text-gray-800 mb-2">
+                    {food?.name}
+                  </h3>
+                  <p className="text-gray-600 mb-4 text-sm md:text-base">
+                    Price: ${food?.price}
+                  </p>
+                  <Link to={`/food/details/${food?._id}`}>
+                    <PrimaryBtn color="stone" btnText="Details" />
+                  </Link>
+                </motion.div>
+              </motion.div>
+            </motion.div>
+          );
+        })}
       </motion.div>
-    </motion.div>
-  );
-})}
-
-</motion.div>
-
     </DataStatus>
   );
 };

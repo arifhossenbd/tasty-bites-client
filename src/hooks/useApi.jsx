@@ -4,6 +4,7 @@ import useAxiosSecure from "./useAxiosSecure";
 
 const useApi = () => {
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
   const axiosPublic = useAxiosPublic();
   const axiosSecure = useAxiosSecure();
 
@@ -18,10 +19,13 @@ const useApi = () => {
       };
     } catch (error) {
       console.error(error);
+      const err = error?.response?.data || true;
+      const errMsg = error?.response?.data?.message || "Something went wrong";
+      setError(error || message);
       return {
         success: false,
-        error: error?.response?.data || true,
-        message: error?.response?.data?.message || "Something went wrong",
+        error: err,
+        message: errMsg
       };
     } finally {
       setLoading(false);
@@ -70,6 +74,7 @@ const useApi = () => {
 
   return {
     loading,
+    error,
     createData,
     getPublicData,
     getSecureData,

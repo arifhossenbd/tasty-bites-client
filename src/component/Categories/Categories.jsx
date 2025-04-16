@@ -6,31 +6,30 @@ import "swiper/css/pagination";
 import "swiper/css/free-mode";
 import { FreeMode, Pagination } from "swiper/modules";
 import { motion, AnimatePresence } from "framer-motion";
-import useApi from "../../hooks/useApi";
-import PrimaryBtn from "../../component/Buttons/PrimaryBtn";
 import { Link } from "react-router-dom";
+import useApi from "../../hooks/useApi";
+import PrimaryBtn from "../Buttons/PrimaryBtn";
+import { useTheme } from "../../hooks/useTheme"; // Import the useTheme hook
 
 const Categories = () => {
   const [categories, setCategories] = useState([]);
   const [activeCategory, setActiveCategory] = useState("");
   const [foods, setFoods] = useState([]);
-
   const { getPublicData, loading } = useApi();
+  const { apply } = useTheme();
 
   // 🔹 Fetch all categories with items
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        const res = await getPublicData("/categories");
-        const catList = res?.data || [];
+      const response = await getPublicData("/categories");
+      if (response?.success) {
+        const catList = response?.data || [];
         setCategories(catList);
         const first = catList?.[0];
         if (first) {
           setActiveCategory(first.name);
           setFoods(first.items);
         }
-      } catch (err) {
-        console.error("Failed to fetch categories:", err);
       }
     };
     fetchData();
@@ -43,29 +42,32 @@ const Categories = () => {
   }, [activeCategory]);
 
   return (
-    <div className="md:mt-4 mx-auto px-4 md:px-0 md:w-11/12 lg:w-10/12">
-      <h2 className="text-3xl font-bold mb-8 text-center">
+    <div className="mt-4 mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
+      <h2 className={`text-2xl sm:text-3xl font-bold mb-6 sm:mb-8 text-center ${apply('text')}`}>
         🍱 Browse by Category
       </h2>
 
-      {/* 🔘 Category Buttons */}
-      <div className="flex flex-wrap justify-center gap-2 mb-8">
-        {categories.map(({ name }) => (
-          <button
-            key={name}
-            onClick={() => setActiveCategory(name)}
-            className={`btn btn-sm rounded-full px-4 capitalize transition-all duration-200 ${
-              activeCategory === name
-                ? "bg-yellow-200 text-yellow-800 border-yellow-300"
-                : "btn-outline text-gray-600 hover:bg-yellow-100"
-            }`}
-          >
-            {name}
-          </button>
-        ))}
+      {/* 🔘 Category Buttons - Scrollable on mobile */}
+      <div className="mb-6 sm:mb-8 overflow-x-auto pb-2">
+        <div className="flex space-x-2 px-1 min-w-max">
+          {categories.map(({ name }) => (
+            <button
+              key={name}
+              onClick={() => setActiveCategory(name)}
+              className={`btn btn-sm rounded-full px-3 sm:px-4 capitalize transition-all duration-200 ${
+                activeCategory === name
+                  ?  `${apply('active')} ${apply('btnText')} border ${apply('inputBorder')}`
+                  : `${apply('inactive')} border ${apply('inputBorder')}`
+              }`}
+            >
+              {name}
+            </button>
+          ))}
+        </div>
       </div>
+
       {loading ? (
-        <div className="text-center text-orange-500 font-medium">
+        <div className={`text-center py-12 ${apply('text')}`}>
           <span className="loading loading-dots loading-lg"></span>
         </div>
       ) : (
@@ -76,13 +78,28 @@ const Categories = () => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -30 }}
             transition={{ duration: 0.4 }}
+            className="px-1"
           >
             {foods?.length > 0 ? (
-              <>
+              <div className="w-full">
                 <Swiper
-                  slidesPerView={3}
-                  spaceBetween={30}
+                  slidesPerView={1}
+                  breakpoints={{
+                    480: {
+                      slidesPerView: 2,
+                      spaceBetween: 12,
+                    },
+                    768: {
+                      slidesPerView: 3,
+                      spaceBetween: 14,
+                    },
+                    1024: {
+                      slidesPerView: 4,
+                      spaceBetween: 16,
+                    },
+                  }}
                   freeMode={true}
+                  spaceBetween={12}
                   pagination={{
                     clickable: true,
                   }}
@@ -90,9 +107,9 @@ const Categories = () => {
                   className="mySwiper"
                 >
                   {foods?.map((food) => (
-                    <SwiperSlide key={food?._id} className="my-12 md:my-14">
+                    <SwiperSlide key={food?._id} className="my-6 sm:my-8 rounded-xl">
                       <motion.div
-                        className="card flex flex-col h-full w-full bg-white border border-stone-200 rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300"
+                        className={`card flex flex-col h-full w-full ${apply('cardBg')} border ${apply('inputBorder')} rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300`}
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         whileHover={{
@@ -100,7 +117,7 @@ const Categories = () => {
                         }}
                       >
                         {/* Image section */}
-                        <motion.figure className="relative h-56 overflow-hidden">
+                        <motion.figure className="relative h-48 sm:h-56 w-full overflow-hidden">
                           <motion.img
                             src={food?.image}
                             alt={food?.name}
@@ -112,24 +129,24 @@ const Categories = () => {
                             }}
                           />
                           {/* Category badge */}
-                          <div className="absolute top-3 right-3 bg-blue-100 text-blue-500 px-3 py-1 text-xs font-semibold shadow-md rounded-full">
+                          <div className="absolute top-2 right-2 sm:top-3 sm:right-3 bg-blue-100 text-blue-500 px-2 sm:px-3 py-0.5 sm:py-1 text-xs font-semibold shadow-md rounded-full">
                             {food?.category}
                           </div>
                         </motion.figure>
 
                         {/* Content section */}
-                        <div className="flex flex-col flex-grow p-4 gap-4">
+                        <div className={`flex flex-col flex-grow p-3 sm:p-4 gap-3 sm:gap-4 ${apply('cardText')}`}>
                           {/* Title and price */}
                           <div className="flex-grow">
-                            <h3 className="text-lg font-bold text-stone-800 mb-2 line-clamp-2">
+                            <h3 className={`text-base sm:text-lg font-bold mb-1 sm:mb-2 line-clamp-2 ${apply('text')}`}>
                               {food?.name}
                             </h3>
-                            <div className="flex items-center justify-between mt-3">
-                              <span className="text-xl font-bold text-yellow-600">
+                            <div className="flex items-center justify-between mt-2 sm:mt-3">
+                              <span className="text-lg sm:text-xl font-bold text-yellow-600">
                                 ${food?.price}
                               </span>
                               <span
-                                className={`text-xs py-1 px-2 rounded-full ${
+                                className={`text-xs py-0.5 sm:py-1 px-1.5 sm:px-2 rounded-full ${
                                   food?.quantity > 0
                                     ? "bg-green-100 text-green-800"
                                     : "bg-red-100 text-red-800"
@@ -143,13 +160,13 @@ const Categories = () => {
                           </div>
 
                           {/* Divider */}
-                          <div className="border-t border-stone-200"></div>
+                          <div className={`border-t ${apply('inputBorder')}`}></div>
 
                           {/* More information */}
-                          <div className="flex items-center justify-between gap-3 text-sm text-stone-600 mb-3">
-                            <div className="flex items-center gap-2">
+                          <div className={`flex items-center justify-between gap-2 sm:gap-3 text-xs sm:text-sm mb-2 sm:mb-3 ${apply('cardText')}`}>
+                            <div className="flex items-center gap-1 sm:gap-2">
                               <svg
-                                className="w-4 h-4 text-stone-400"
+                                className="w-3 h-3 sm:w-4 sm:h-4"
                                 fill="none"
                                 stroke="currentColor"
                                 viewBox="0 0 24 24"
@@ -169,9 +186,9 @@ const Categories = () => {
                               </svg>
                               <span className="truncate">{food?.origin}</span>
                             </div>
-                            <div className="flex items-center gap-2">
+                            <div className="flex items-center gap-1 sm:gap-2">
                               <svg
-                                className="w-4 h-4 text-stone-400"
+                                className="w-3 h-3 sm:w-4 sm:h-4"
                                 fill="none"
                                 stroke="currentColor"
                                 viewBox="0 0 24 24"
@@ -183,13 +200,15 @@ const Categories = () => {
                                   d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
                                 />
                               </svg>
-                              <span>{food?.purchaseCount ? food?.purchaseCount : 0}</span>
+                              <span>
+                                {food?.purchaseCount ? food?.purchaseCount : 0}
+                              </span>
                             </div>
                           </div>
                           <div className="mt-auto">
                             <Link to={`/food/details/${food?._id}`}>
                               <PrimaryBtn
-                                style="w-full"
+                                style="w-full py-2 text-sm sm:text-base"
                                 btnText="View Details"
                               />
                             </Link>
@@ -199,9 +218,9 @@ const Categories = () => {
                     </SwiperSlide>
                   ))}
                 </Swiper>
-              </>
+              </div>
             ) : (
-              <div className="text-center text-gray-400 text-sm">
+              <div className={`text-center text-sm py-8 sm:py-12 ${apply('cardText')}`}>
                 No items in{" "}
                 <span className="font-semibold">{activeCategory}</span>
               </div>

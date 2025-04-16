@@ -13,11 +13,18 @@ import {
   FaAngleLeft,
   FaAngleRight,
   FaAngleDoubleRight,
+  FaTrash,
 } from "react-icons/fa";
-import MyFood from "../MyFood/MyFood";
+import { Link, replace, useLocation, useNavigate } from "react-router-dom";
+import {
+  confirmToast,
+  showErrorToast,
+  showSuccessToast,
+} from "../../utils/CrudToast";
 
-const MyFoods = () => {
-  const [allFoods, setAllFoods] = useState([]);
+const Wishlist = () => {
+  const [foods, setFoods] = useState([]);
+  const { user } = useAuth();
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
   const [searchTerm, setSearchTerm] = useState("");
@@ -25,17 +32,23 @@ const MyFoods = () => {
     field: "name",
     direction: "asc",
   });
-  const { loading, error, getSecureData } = useApi();
-  const { user } = useAuth();
-  const email = user?.email
+  const location = useLocation();
+  const from = location?.state?.from || "/foods";
+  const navigate = useNavigate();
+  const { loading, error, getSecureData, deleteData } = useApi();
 
   // Fetch all foods on component mount
   const fetchFoods = useCallback(async () => {
-    const result = await getSecureData(`/my-foods?email=${email}`);
-    if (result?.success) {
-      setAllFoods(result?.data);
+    try {
+      const result = await getSecureData(`/wishlist?email=${user?.email}`);
+      if (result?.success) {
+        setFoods(result?.data);
+      }
+    } catch (err) {
+      console.error(err);
+      throw err;
     }
-  }, [email, getSecureData]);
+  }, [user?.email, getSecureData]);
 
   useEffect(() => {
     fetchFoods();
@@ -43,7 +56,7 @@ const MyFoods = () => {
 
   // In the useMemo where sorting happens:
   const { filteredFoods, totalItems } = useMemo(() => {
-    let result = [...allFoods];
+    let result = [...foods];
 
     // Apply search filter
     if (searchTerm) {
@@ -86,7 +99,7 @@ const MyFoods = () => {
     result = result?.slice(startIndex, startIndex + limit);
 
     return { filteredFoods: result, totalItems: total };
-  }, [allFoods, searchTerm, sortConfig, page, limit]);
+  }, [foods, searchTerm, sortConfig, page, limit]);
 
   // Handle sort configuration
   const handleSort = (field) => {
@@ -127,6 +140,39 @@ const MyFoods = () => {
     );
   }, [totalPages, page]);
 
+  const handleDelete = (food) => {
+    const id = food?._id;
+    confirmToast({
+      message: (
+        <span>
+          Are you sure you want to delete{" "}
+          <span className="font-semibold text-yellow-500">{food?.name}</span>?
+        </span>
+      ),
+      confirmText: "Yes, delete",
+      cancelText: "No, keep it",
+      onConfirm: async () => {
+        const res = await deleteData(`/delete/wishlist/item/${id}`);
+        if (res?.success) {
+          showSuccessToast(
+            "🗑️ Food Item Removed",
+            {
+              image: food?.image,
+              category: food?.category,
+              name: food?.name,
+              price: Number(food?.price),
+            },
+            res?.message,
+            ""
+          );
+          setFoods(foods?.filter((food) => food?._id !== id));
+          navigate(from, { replace: true });
+        } else {
+          showErrorToast("⚠️ Couldn’t Delete Item", res?.message);
+        }
+      },
+    });
+  };
   if (loading) {
     return <Loading secondaryText="My Foods" />;
   }
@@ -134,21 +180,21 @@ const MyFoods = () => {
   return (
     <DataStatus
       error={error}
-      path="/add-food"
-      btnText="Add Food"
-      message="Your foods not found"
-      data={filteredFoods || filteredFoods}
+      path="/foods"
+      btnText="Menu"
+      message="Currently wishlist is empty"
+      data={filteredFoods || foods}
       onRetry={fetchFoods}
     >
       <PageHeader
-        title="My Foods"
-        subtitle="Manage your food items"
+        title="Wishlist"
+        subtitle="Your favorite food items"
         breadcrumbs={[
           { name: "Home", path: "/" },
           { name: "Menu", path: "/foods" },
-          { name: "My Foods" },
+          { name: "Wishlist" },
         ]}
-        backgroundImage="/tasty-bites-images/banner/banner6.jpg"
+        backgroundImage="/tasty-bites-images/banner/banner7.jpg"
       />
       <div className="px-4 md:px-0 md:w-11/12 lg:w-10/12 mx-auto">
         {/* Search and Limit Controls */}
@@ -224,12 +270,41 @@ const MyFoods = () => {
             </thead>
             <tbody className="divide-y divide-gray-200">
               {filteredFoods.map((food) => (
-                <MyFood
+                <tr
                   key={food?._id}
-                  food={food}
-                  setAllFoods={setAllFoods}
-                  allFoods={allFoods}
-                />
+                  className="hover:bg-yellow-50 transition-colors"
+                >
+                  <td className="py-4 px-4">
+                    <img
+                      src={food?.image}
+                      alt={food?.name}
+                      className="w-16 h-16 object-cover rounded"
+                    />
+                  </td>
+                  <td className="py-4 px-4 font-medium">
+                    <Link
+                      to={`/food/details/${food?.foodId}`}
+                      className="text-yellow-600 hover:text-yellow-800 hover:underline transition-colors"
+                    >
+                      {food?.name}
+                    </Link>
+                  </td>
+                  <td className="py-4 px-4">{food?.category}</td>
+                  <td className="py-4 px-4">
+                    {food?.price
+                      ? `$${parseFloat(food?.price).toFixed(2)}`
+                      : "$0.00"}
+                  </td>
+                  <td className="py-4 px-4 pl-10">
+                    <button
+                      onClick={() => handleDelete(food)}
+                      className="text-red-600 hover:text-red-800 hover:underline transition-colors"
+                      title="Delete"
+                    >
+                      <FaTrash />
+                    </button>
+                  </td>
+                </tr>
               ))}
             </tbody>
           </table>
@@ -301,4 +376,4 @@ const MyFoods = () => {
   );
 };
 
-export default MyFoods;
+export default Wishlist;

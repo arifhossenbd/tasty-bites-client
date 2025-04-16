@@ -3,7 +3,6 @@ import Food from "../Food/Food";
 import useApi from "../../hooks/useApi";
 import DataStatus from "../../component/DataStatus/DataStatus";
 import PageHeader from "../../component/PageHeader/PageHeader";
-import Loading from "../../component/Loading/Loading";
 import {
   FaAngleDoubleLeft,
   FaAngleDoubleRight,
@@ -12,7 +11,7 @@ import {
   FaSearch,
 } from "react-icons/fa";
 const AllFood = () => {
-  const [allFoods, setAllFoods] = useState([]);
+  const [foods, setFoods] = useState([]);
   const { loading, error, getPublicData } = useApi();
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
@@ -24,12 +23,9 @@ const AllFood = () => {
 
   // Fetch all foods on component mount
   const fetchFoods = useCallback(async () => {
-    try {
-      const response = await getPublicData("/foods");
-      setAllFoods(response?.data);
-    } catch (err) {
-      console.error(err);
-      throw err;
+    const response = await getPublicData("/foods");
+    if (response?.success) {
+      setFoods(response?.data);
     }
   }, [getPublicData]);
 
@@ -39,7 +35,7 @@ const AllFood = () => {
 
   // In the useMemo where sorting happens:
   const { filteredFoods, totalItems } = useMemo(() => {
-    let result = [...allFoods];
+    let result = [...foods];
 
     // Apply search filter
     if (searchTerm) {
@@ -82,7 +78,7 @@ const AllFood = () => {
     result = result?.slice(startIndex, startIndex + limit);
 
     return { filteredFoods: result, totalItems: total };
-  }, [allFoods, searchTerm, sortConfig, page, limit]);
+  }, [foods, searchTerm, sortConfig, page, limit]);
 
   // Pagination controls
   const totalPages = Math.ceil(totalItems / limit);
@@ -103,17 +99,14 @@ const AllFood = () => {
     );
   }, [totalPages, page]);
 
-  if (loading) {
-    return <Loading secondaryText="All Food" />;
-  }
-
   return (
     <DataStatus
+      loading={loading}
       btnText="Go Back Home"
       path="/"
       error={error}
       message="Foods not found"
-      data={allFoods}
+      data={foods}
       onRetry={fetchFoods}
       emptyMessage="No food items available"
     >

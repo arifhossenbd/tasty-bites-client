@@ -1,27 +1,37 @@
 import { motion } from "framer-motion";
-
 const PrimaryBtn = ({
   dataTip = "",
   btnText = "",
-  onClick = ()=> {},
+  onClick = () => {},
   loading,
   type = "button",
   color = "yellow",
   disabled = null,
   style,
 }) => {
+  const yellowBg = "#fde68a";
+  const yellowText = "#92400e";
+  const yellowHover = "#ffffff";
+  const yellowSlide = "#f59e0b";
+
+  const stoneBg = "#e7e5e4";
+  const stoneText = "#57534e";
+  const stoneHover = "#ffffff";
+  const stoneSlide = "#57534e";
   const colorVariants = {
     yellow: {
-      initial: { backgroundColor: "#fde68a", color: "#92400e" },
-      hover: { color: "#ffffff" },
-      slide: { backgroundColor: "#f59e0b" },
+      initial: { backgroundColor: yellowBg, color: yellowText },
+      hover: { color: yellowHover },
+      slide: { backgroundColor: yellowSlide },
     },
     stone: {
-      initial: { backgroundColor: "#e7e5e4", color: "#57534e" },
-      hover: { color: "#ffffff" },
-      slide: { backgroundColor: "#57534e" },
+      initial: { backgroundColor: stoneBg, color: stoneText },
+      hover: { color: stoneHover },
+      slide: { backgroundColor: stoneSlide },
     },
   };
+
+  const currentVariant = colorVariants[color] || colorVariants.yellow;
 
   return (
     <motion.button
@@ -33,7 +43,7 @@ const PrimaryBtn = ({
           : `${style} btn relative overflow-hidden rounded-md border-none shadow-none font-normal uppercase tracking-widest`
       }
       initial="initial"
-      variants={colorVariants[color]}
+      variants={currentVariant}
       whileHover={disabled ? "" : "hover"}
       whileTap={{ scale: 0.98 }}
       type={type}
@@ -48,7 +58,7 @@ const PrimaryBtn = ({
           },
           hover: {
             x: 0,
-            backgroundColor: colorVariants[color].slide.backgroundColor,
+            backgroundColor: currentVariant.slide.backgroundColor,
           },
         }}
         transition={{ duration: 0.4, ease: "easeInOut" }}

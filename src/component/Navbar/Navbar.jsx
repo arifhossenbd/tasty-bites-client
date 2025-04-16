@@ -7,11 +7,13 @@ import { FaShoppingCart } from "react-icons/fa";
 import Cart from "../../pages/Cart/Cart";
 import { useState } from "react";
 import { useCart } from "../../hooks/useCart";
+import { useTheme } from "../../hooks/useTheme";
 
 const Navbar = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const { user, signOut, loading } = useAuth();
   const { totalQuantity, totalPrice } = useCart();
+  const {apply} = useTheme()
   const link = links?.map((link) => (
     <li key={link.id}>
       <NavLink
@@ -27,7 +29,7 @@ const Navbar = () => {
     </li>
   ));
   return (
-    <div className="fixed z-50 w-full bg-base-100 shadow-sm">
+    <div className={apply ? `${apply("bg")} fixed z-50 w-full bg-base-100 shadow-sm` : "fixed z-50 w-full bg-base-100 shadow-sm"}>
       <div className="navbar flex items-center justify-between gap-2 md:gap-0 px-4 md:px-0 md:w-11/12 lg:w-10/12 mx-auto">
         <div className="dropdown dropdown-hover lg:hidden">
           <div tabIndex={0} role="button" className="lg:hidden">
@@ -93,7 +95,7 @@ const Navbar = () => {
                       {totalQuantity ? totalQuantity : 0} Items
                     </span>
                     <span className="text-info">
-                      Subtotal: ${totalPrice ? totalPrice : 0.00}
+                      Subtotal: ${totalPrice ? totalPrice : 0.0}
                     </span>
                     <div className="card-actions mt-2">
                       <button
@@ -175,6 +177,18 @@ const Navbar = () => {
                       </li>
                       <li>
                         <NavLink
+                          className={({ isActive }) =>
+                            isActive
+                              ? `text-yellow-500 ${transitionNoDelay}`
+                              : `hover:text-yellow-500 ${transitionNoDelay}`
+                          }
+                          to="/wishlist"
+                        >
+                          Wishlist
+                        </NavLink>
+                      </li>
+                      <li>
+                        <NavLink
                           to="/profile"
                           className={({ isActive }) =>
                             isActive
@@ -187,11 +201,8 @@ const Navbar = () => {
                         </NavLink>
                       </li>
                       <li>
-                        <Link>{user?.email}</Link>
-                      </li>
-                      <li>
                         <button
-                          className="text-yellow-500"
+                          className="text-blue-500"
                           onClick={() => signOut()}
                         >
                           Sign Out

@@ -1,6 +1,6 @@
 import useApi from "../../hooks/useApi";
 import { FaEdit, FaTrash } from "react-icons/fa";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Modal from "../../utils/Modal";
 import { useState } from "react";
 import {
@@ -11,9 +11,6 @@ import {
 
 const MyFood = ({ food, setAllFoods, allFoods }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const location = useLocation();
-  const from = location?.state?.from || "/foods";
-  const navigate = useNavigate();
   const { deleteData, updateData } = useApi();
   const { _id, image, name, category, price } = food || {};
 
@@ -81,7 +78,7 @@ const MyFood = ({ food, setAllFoods, allFoods }) => {
   };
 
   return (
-    <tr key={_id} className="hover:bg-yellow-50 transition-colors">
+    <tr className="hover:bg-yellow-50 transition-colors">
       <td className="py-4 px-4">
         <img
           src={image}

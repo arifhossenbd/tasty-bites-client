@@ -24,7 +24,7 @@ const Footer = () => {
             {/* Social Media Icons */}
             <div className="flex gap-4">
               <Link
-                to="https://x.com"
+                to="https://x.com/arifhossengd"
                 target="_blank"
                 className="text-stone-300 hover:text-yellow-400 transition-colors"
               >
@@ -38,7 +38,7 @@ const Footer = () => {
                 <FaFacebook size={22} />
               </Link>
               <Link
-                to="https://instagram.com"
+                to="https://www.instagram.com/arifhussainbd/"
                 target="_blank"
                 className="text-stone-300 hover:text-yellow-400 transition-colors"
               >
@@ -59,7 +59,7 @@ const Footer = () => {
             <h6 className="text-lg font-semibold text-yellow-400">
               Quick Links
             </h6>
-            {["/menu", "/about", "/gallery", "/events"].map((link, i) => (
+            {["/foods", "/about", "/gallery", "/events"].map((link, i) => (
               <Link
                 key={i}
                 to={link}

@@ -15,7 +15,7 @@ const DataStatus = ({
   children,
 }) => {
 
-  if (loading) {
+  if (loading || !data) {
     return <Loading />;
   }
   const hasData = () => {
@@ -34,7 +34,7 @@ const DataStatus = ({
         <div className="space-y-2 max-w-md">
           <h2 className="text-2xl font-bold text-stone-700">Error Occurred</h2>
           <p className="text-stone-600">
-            {error.message ||
+            {error?.message ||
               error ||
               "Something went wrong. Please try again."}
           </p>

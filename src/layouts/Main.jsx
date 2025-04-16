@@ -3,18 +3,25 @@ import Navbar from "../component/Navbar/Navbar";
 import Footer from "../component/Footer/Footer";
 import AuthProvider from "../contexts/AuthContext/AuthProvider";
 import CartProvider from "../contexts/CartContext/CartProvider";
+import ScrollToTopButton from "../component/ScrollToTopButton/ScrollToTopButton";
+import FloatingThemeButton from "../component/FloatingThemeButton/FloatingThemeButton";
+import { ThemeProvider } from "../contexts/ThemeContext/ThemeProvider";
 
 const Main = () => {
   return (
-    <AuthProvider>
-      <CartProvider>
-        <Navbar />
-        <div className="bg-stone-50 pb-6 md:pb-8 lg:pb-12 pt-16">
-          <Outlet />
-        </div>
-        <Footer />
-      </CartProvider>
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <CartProvider>
+          <Navbar />
+          <div className="min-h-screen">
+            <Outlet />
+            <ScrollToTopButton />
+            <FloatingThemeButton/>
+          </div>
+          <Footer />
+        </CartProvider>
+      </AuthProvider>
+    </ThemeProvider>
   );
 };
 

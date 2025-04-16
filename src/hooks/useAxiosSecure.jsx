@@ -9,7 +9,7 @@ const useAxiosSecure = () => {
 
   const axiosSecure = useMemo(() => {
     const instance = axios.create({
-      baseURL: "http://localhost:3000",
+      baseURL: "https://tasty-bites-server-eight.vercel.app",
       withCredentials: true,
     });
 
