@@ -5,11 +5,9 @@ import AuthProvider from "../contexts/AuthContext/AuthProvider";
 import CartProvider from "../contexts/CartContext/CartProvider";
 import ScrollToTopButton from "../component/ScrollToTopButton/ScrollToTopButton";
 import FloatingThemeButton from "../component/FloatingThemeButton/FloatingThemeButton";
-import { ThemeProvider } from "../contexts/ThemeContext/ThemeProvider";
 
 const Main = () => {
   return (
-    <ThemeProvider>
       <AuthProvider>
         <CartProvider>
           <Navbar />
@@ -21,7 +19,6 @@ const Main = () => {
           <Footer />
         </CartProvider>
       </AuthProvider>
-    </ThemeProvider>
   );
 };
 

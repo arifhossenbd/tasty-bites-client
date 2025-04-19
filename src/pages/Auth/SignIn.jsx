@@ -1,10 +1,21 @@
 import { FaUtensils } from "react-icons/fa";
 import AuthForm from "../../component/AuthForm/AuthForm";
 import { useAuth } from "../../hooks/useAuth";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { authError } from "../../utils/AuthToast";
+import { useTheme } from "../../hooks/useTheme";
 const SignIn = () => {
   const { signIn, loading } = useAuth();
+  const { currentTheme } = useTheme();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const from = location?.state?.from || "/";
+
+  const {
+    textColor,
+    cardTextColor,
+    primaryTextColor,
+  } = currentTheme;
 
   const handleSignIn = async (e) => {
     e.preventDefault();
@@ -14,6 +25,7 @@ const SignIn = () => {
 
     try {
       await signIn(email, password);
+      navigate(from, { replace: true });
     } catch (error) {
       authError(error);
     }
@@ -22,8 +34,10 @@ const SignIn = () => {
   return (
     <AuthForm
       loading={loading}
+      imgName="banner7.jpg"
       btnText="Sign In"
       handleForm={handleSignIn}
+      subtitle="Sign in to access your account"
       header={
         <div className="w-full">
           <figure>
@@ -34,17 +48,19 @@ const SignIn = () => {
               loading="lazy"
             />
           </figure>
-          <h2 className="card-title flex items-center justify-center mt-4 gap-2">
+          <h2
+            className={`card-title flex items-center justify-center mt-4 gap-2 ${textColor}`}
+          >
             <FaUtensils /> Welcome Back!
           </h2>
         </div>
       }
       footer={
-        <p className="text-center mt-4">
+        <p className={`text-center mt-4 ${cardTextColor}`}>
           Don't have an account? Please{" "}
           <Link
             to="/sign-up"
-            className="link hover:text-yellow-600 dark:text-stone-50"
+            className={`link ${primaryTextColor} transition-colors opacity-80 hover:opacity-100`}
           >
             Sign Up
           </Link>

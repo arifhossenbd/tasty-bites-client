@@ -4,11 +4,9 @@ import { useTheme } from "../../hooks/useTheme";
 
 const Loading = ({
   text = "TastyBites",
-  primaryColor = "#fbbf24",
-  secondaryColor = "#fde68a",
 }) => {
   const [activeIndex, setActiveIndex] = useState(-1);
-  const {apply} = useTheme()
+  const {currentTheme} = useTheme()
   const letters = text?.split("") || [];
 
   const letterDelay = 80;
@@ -40,7 +38,7 @@ const Loading = ({
   }, [letters.length]);
 
   return (
-    <div className={ apply ? `${apply("bg")} px-4 flex items-center justify-center h-screen` : `px-4 flex items-center justify-center h-screen`}>
+    <div className={ currentTheme ? `${currentTheme.cardBgColor} px-4 flex items-center justify-center h-screen` : `px-4 flex items-center justify-center h-screen`}>
       <div className="font-yesterYear text-3xl md:text-4xl lg:text-5xl flex">
         {letters.map((char, index) => (
           <motion.span
@@ -50,7 +48,7 @@ const Loading = ({
               opacity: index <= activeIndex ? 1 : 0.2,
               y: index <= activeIndex ? 0 : 10,
               scale: index <= activeIndex ? 1 : 0.9,
-              color: index === activeIndex ? primaryColor : secondaryColor,
+              color: index === activeIndex ? currentTheme.primaryBtnHoverBgColor : currentTheme.primaryBtnBgColor,
             }}
             transition={{ type: "spring", stiffness: 500, damping: 15 }}
           >

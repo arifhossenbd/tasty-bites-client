@@ -119,43 +119,34 @@ const AuthProvider = ({ children }) => {
 
   const signOutUser = async () => {
     try {
+      await axiosPublic.post('/logout');
       await authAction("signOut", () => signOut(auth));
     } catch (error) {
-      console.error("SignOut Error:", error);
-      throw error;
+      console.error('Logout error:', error);
     }
   };
 
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-      setUser(currentUser || null);
-      if (currentUser) {
-        const user = { email: currentUser?.email };
-        try {
-          const res = await axiosPublic.post("/jwt", user);
-          const token = res?.data?.token;
-          if (token) {
-            localStorage.setItem("access-token", token);
-          }
-        } catch (error) {
-          console.error("JWT Error:", error);
-          throw error;
-        }
-      } else {
-        try {
-          await axiosPublic.post("/logout");
-          localStorage.removeItem("access-token");
-        } catch (error) {
-          console.error("JWT Logout Error:", error);
-          throw error;
-        }
+useEffect(() => {
+  const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+    setUser(currentUser || null);
+    if (currentUser) {
+      const user = { email: currentUser?.email };
+      try {
+        await axiosPublic.post("/jwt", user); // This will set the cookie
+      } catch (error) {
+        console.error("JWT Error:", error);
       }
-      setLoading(false);
-    });
-    return () => {
-      unsubscribe();
-    };
-  }, []);
+    } else {
+      try {
+        await axiosPublic.post("/logout");
+      } catch (error) {
+        console.error("Logout Error:", error);
+      }
+    }
+    setLoading(false);
+  });
+  return () => unsubscribe();
+}, []);
 
   const authInfo = {
     user,

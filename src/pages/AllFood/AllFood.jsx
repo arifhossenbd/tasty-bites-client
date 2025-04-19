@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import Food from "../Food/Food";
 import useApi from "../../hooks/useApi";
 import DataStatus from "../../component/DataStatus/DataStatus";
@@ -10,6 +11,8 @@ import {
   FaAngleRight,
   FaSearch,
 } from "react-icons/fa";
+import { useTheme } from "../../hooks/useTheme";
+
 const AllFood = () => {
   const [foods, setFoods] = useState([]);
   const { loading, error, getPublicData } = useApi();
@@ -20,12 +23,22 @@ const AllFood = () => {
     field: "name",
     direction: "asc",
   });
+  const { currentTheme } = useTheme();
+  const {
+    textColor,
+    borderColor,
+    cardBgColor,
+    inactiveBtn,
+    navTextColor,
+    activeBtn,
+    inputBgColor,
+    inputTextColor,
+  } = currentTheme;
 
-  // Fetch all foods on component mount
   const fetchFoods = useCallback(async () => {
     const response = await getPublicData("/foods");
     if (response?.success) {
-      setFoods(response?.data);
+      setFoods(response?.data || []);
     }
   }, [getPublicData]);
 
@@ -33,24 +46,20 @@ const AllFood = () => {
     fetchFoods();
   }, []);
 
-  // In the useMemo where sorting happens:
   const { filteredFoods, totalItems } = useMemo(() => {
-    let result = [...foods];
+    let result = [...(foods || [])];
 
-    // Apply search filter
     if (searchTerm) {
       const term = searchTerm.toLowerCase();
-      result = result?.filter(
+      result = result.filter(
         (food) =>
           food?.name?.toLowerCase().includes(term) ||
           food?.category?.toLowerCase().includes(term)
       );
     }
 
-    // Apply sorting
     if (sortConfig.field) {
-      result?.sort((a, b) => {
-        // Special handling for price (numeric sorting)
+      result.sort((a, b) => {
         if (sortConfig.field === "price") {
           const valueA = parseFloat(a.price) || 0;
           const valueB = parseFloat(b.price) || 0;
@@ -59,7 +68,6 @@ const AllFood = () => {
             : valueB - valueA;
         }
 
-        // Default string sorting for other fields
         const fieldA = a[sortConfig.field]?.toString().toLowerCase() || "";
         const fieldB = b[sortConfig.field]?.toString().toLowerCase() || "";
 
@@ -73,15 +81,14 @@ const AllFood = () => {
       });
     }
 
-    const total = result?.length;
+    const total = result.length;
     const startIndex = (page - 1) * limit;
-    result = result?.slice(startIndex, startIndex + limit);
+    result = result.slice(startIndex, startIndex + limit);
 
     return { filteredFoods: result, totalItems: total };
   }, [foods, searchTerm, sortConfig, page, limit]);
 
-  // Pagination controls
-  const totalPages = Math.ceil(totalItems / limit);
+  const totalPages = Math.ceil(totalItems / limit) || 1;
   const paginationRange = useMemo(() => {
     const maxVisiblePages = 5;
     const startPage = Math.max(
@@ -98,6 +105,35 @@ const AllFood = () => {
       (_, i) => startPage + i
     );
   }, [totalPages, page]);
+
+  // Animation variants
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    show: { opacity: 1, y: 0, transition: { duration: 0.5 } },
+  };
+
+  const skeletonVariants = {
+    hidden: { opacity: 0.6 },
+    show: { opacity: 1 },
+    exit: { opacity: 0 },
+  };
+
+  const pageTransition = {
+    initial: { opacity: 0, y: 20 },
+    animate: { opacity: 1, y: 0 },
+    exit: { opacity: 0, y: -20 },
+    transition: { duration: 0.3 },
+  };
 
   return (
     <DataStatus
@@ -116,9 +152,21 @@ const AllFood = () => {
         breadcrumbs={[{ name: "Home", path: "/" }, { name: "Menu" }]}
         backgroundImage="/tasty-bites-images/banner/banner10.jpg"
       />
-      <div className="px-4 md:px-0 md:w-11/12 lg:w-10/12 mx-auto">
+      
+      <motion.div
+        initial="initial"
+        animate="animate"
+        exit="exit"
+        variants={pageTransition}
+        className={`px-4 md:px-0 md:w-11/12 lg:w-10/12 mx-auto py-4 md:py-6 pb-10 md:pb-12 ${textColor}`}
+      >
         {/* Search and Sort Controls */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 my-6">
+        <motion.div 
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 my-6"
+        >
           <div className="relative w-full md:w-64">
             <input
               type="text"
@@ -128,9 +176,9 @@ const AllFood = () => {
                 setSearchTerm(e.target.value);
                 setPage(1);
               }}
-              className="w-full pl-10 pr-4 py-2 border rounded-full focus:outline-none focus:ring-2 focus:ring-yellow-500"
+              className={`w-full pl-10 pr-4 py-2 border ${borderColor} focus:outline-none rounded-full ${inputBgColor} ${inputTextColor}`}
             />
-            <FaSearch className="absolute left-3 top-3 text-gray-400" />
+            <FaSearch className={`absolute left-3 top-3 ${inputTextColor}`} />
           </div>
 
           {/* Sort by Dropdown */}
@@ -141,7 +189,7 @@ const AllFood = () => {
                 setSortConfig((prev) => ({ ...prev, field: e.target.value }));
                 setPage(1);
               }}
-              className="border rounded px-2 py-1 text-sm"
+              className={`border rounded px-2 py-1 text-sm ${cardBgColor} ${borderColor}`}
             >
               <option value="name">Sort by Name</option>
               <option value="price">Sort by Price</option>
@@ -157,95 +205,146 @@ const AllFood = () => {
                 }));
                 setPage(1);
               }}
-              className="border rounded px-2 py-1 text-sm"
+              className={`border rounded px-2 py-1 text-sm ${cardBgColor} ${borderColor}`}
             >
               <option value="asc">Ascending</option>
               <option value="desc">Descending</option>
             </select>
           </div>
-        </div>
+        </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 md:gap-3">
-          {filteredFoods?.map((food) => (
-            <Food key={food?._id} food={food} />
-          ))}
-        </div>
+        {/* Food Grid */}
+        {loading ? (
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            animate="show"
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"
+          >
+            {[...Array(6)].map((_, index) => (
+              <motion.div
+                key={index}
+                variants={skeletonVariants}
+                initial="hidden"
+                animate="show"
+                exit="exit"
+                transition={{ duration: 0.5, repeat: Infinity, repeatType: "reverse", delay: index * 0.1 }}
+                className={`h-64 rounded-lg ${cardBgColor}`}
+              />
+            ))}
+          </motion.div>
+        ) : (
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            animate="show"
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 md:gap-3"
+          >
+            <AnimatePresence>
+              {filteredFoods.map((food) => (
+                <motion.div
+                  key={food?._id}
+                  variants={itemVariants}
+                  layout
+                  transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                >
+                  <Food food={food} />
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </motion.div>
+        )}
+
         {/* Enhanced Pagination Controls */}
         {totalItems > 0 && (
-          <div className="flex flex-row justify-between flex-wrap items-center gap-4 mt-6">
-            <div className="text-sm text-gray-600">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.2 }}
+            className="flex flex-row justify-between flex-wrap items-center gap-4 mt-6"
+          >
+            <div className={`text-sm ${navTextColor}`}>
               Showing {(page - 1) * limit + 1} to{" "}
               {Math.min(page * limit, totalItems)} of {totalItems} items
             </div>
 
             <div className="flex items-center flex-wrap gap-2">
-              <button
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
                 onClick={() => setPage(1)}
                 disabled={page === 1}
-                className="p-2 border rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-yellow-50 transition-colors"
+                className={`p-2 border rounded disabled:opacity-50 disabled:cursor-not-allowed ${inactiveBtn} transition-colors ${borderColor}`}
                 title="First Page"
               >
                 <FaAngleDoubleLeft />
-              </button>
-              <button
+              </motion.button>
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
                 onClick={() => setPage(Math.max(1, page - 1))}
                 disabled={page === 1}
-                className="p-2 border rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-yellow-50 transition-colors"
+                className={`p-2 border rounded disabled:opacity-50 disabled:cursor-not-allowed ${inactiveBtn} transition-colors ${borderColor}`}
                 title="Previous Page"
               >
                 <FaAngleLeft />
-              </button>
+              </motion.button>
 
               <div className="flex items-center flex-wrap gap-1">
-                {paginationRange?.map((pageNumber) => (
-                  <button
+                {paginationRange.map((pageNumber) => (
+                  <motion.button
                     key={pageNumber}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
                     onClick={() => setPage(pageNumber)}
-                    className={`w-10 h-10 flex flex-wrap items-center justify-center border rounded ${
-                      page === pageNumber
-                        ? "bg-yellow-500 text-white"
-                        : "hover:bg-yellow-50"
-                    } transition-colors`}
+                    className={`w-10 h-10 flex items-center justify-center border rounded ${
+                      page === pageNumber ? activeBtn : inactiveBtn
+                    } transition-colors ${borderColor}`}
                   >
                     {pageNumber}
-                  </button>
+                  </motion.button>
                 ))}
-                <select
+                <motion.select
+                  whileHover={{ scale: 1.05 }}
                   value={limit}
                   onChange={(e) => {
                     setLimit(Number(e.target.value));
                     setPage(1);
                   }}
-                  className="border rounded p-2"
+                  className={`border rounded p-2 ${cardBgColor} ${borderColor}`}
                 >
                   {[5, 10, 20, 50].map((size) => (
                     <option key={size} value={size}>
                       {size}
                     </option>
                   ))}
-                </select>
+                </motion.select>
               </div>
 
-              <button
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
                 onClick={() => setPage(Math.min(totalPages, page + 1))}
                 disabled={page === totalPages}
-                className="p-2 border rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-yellow-50 transition-colors"
+                className={`p-2 border rounded disabled:opacity-50 disabled:cursor-not-allowed ${inactiveBtn} transition-colors ${borderColor}`}
                 title="Next Page"
               >
                 <FaAngleRight />
-              </button>
-              <button
+              </motion.button>
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
                 onClick={() => setPage(totalPages)}
                 disabled={page === totalPages}
-                className="p-2 border rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-yellow-50 transition-colors"
+                className={`p-2 border rounded disabled:opacity-50 disabled:cursor-not-allowed ${inactiveBtn} transition-colors ${borderColor}`}
                 title="Last Page"
               >
                 <FaAngleDoubleRight />
-              </button>
+              </motion.button>
             </div>
-          </div>
+          </motion.div>
         )}
-      </div>
+      </motion.div>
     </DataStatus>
   );
 };

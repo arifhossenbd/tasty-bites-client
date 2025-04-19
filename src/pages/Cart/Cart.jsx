@@ -7,6 +7,7 @@ import useApi from "../../hooks/useApi";
 import toast from "react-hot-toast";
 import { useCart } from "../../hooks/useCart";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useTheme } from "../../hooks/useTheme";
 
 const Cart = ({ isOpen, onClose, onCheckoutSuccess }) => {
   const [quantities, setQuantities] = useState({});
@@ -23,6 +24,7 @@ const Cart = ({ isOpen, onClose, onCheckoutSuccess }) => {
     updateQuantity,
   } = useCart();
   const { createData } = useApi();
+  const { currentTheme } = useTheme();
 
   useEffect(() => {
     const initialQuantities = {};
@@ -36,28 +38,25 @@ const Cart = ({ isOpen, onClose, onCheckoutSuccess }) => {
     const currentQty = quantities[id] || 1;
     const cartItem = cartItems?.find((item) => item?.foodId === id);
     const maxQty = cartItem?.availableQuantity || 10;
-  
+
     const newQty = Math.min(maxQty, Math.max(1, currentQty + change));
-  
+
     if (newQty > cartItem?.availableQuantity) {
-      showErrorToast("Oops.."
-        `Only ${cartItem?.availableQuantity} available in stock!`
+      showErrorToast(
+        "Oops.."`Only ${cartItem?.availableQuantity} available in stock!`
       );
       return;
     }
     setQuantities((prev) => ({ ...prev, [id]: newQty }));
     updateQuantity(id, newQty);
-  };  
+  };
 
   const confirmDelete = (item) => {
     confirmToast({
       message: (
         <span>
           Are you sure you want to delete{" "}
-          <span className="font-semibold text-yellow-500">
-            {item?.name}
-          </span>
-          ?
+          <span className="font-semibold text-yellow-500">{item?.name}</span>?
         </span>
       ),
       confirmText: "Yes, delete",
@@ -79,7 +78,7 @@ const Cart = ({ isOpen, onClose, onCheckoutSuccess }) => {
         orderDate: Date.now(),
         totalPrice,
         items: cartItems,
-        pending: true
+        pending: true,
       };
 
       const res = await createData("/checkout", orderData);
@@ -100,7 +99,7 @@ const Cart = ({ isOpen, onClose, onCheckoutSuccess }) => {
   };
 
   return (
-    <div className={`drawer drawer-end z-50 ${isOpen ? "open" : ""}`}>
+    <div className={`drawer drawer-end z-50 ${currentTheme.textColor} ${isOpen ? "open" : ""}`}>
       <input
         id="cart-drawer"
         type="checkbox"
@@ -115,7 +114,7 @@ const Cart = ({ isOpen, onClose, onCheckoutSuccess }) => {
         ></label>
         <div className="menu p-4 w-80 min-h-full bg-base-200 text-base-content">
           <div className="flex justify-between items-center mb-6 pr-4">
-            <h2 className="text-xl font-bold text-stone-600">Your Cart</h2>
+            <h2 className="text-xl font-bold">Your Cart</h2>
             <button className="btn btn-sm btn-circle" onClick={onClose}>
               ✕
             </button>
@@ -136,9 +135,7 @@ const Cart = ({ isOpen, onClose, onCheckoutSuccess }) => {
                     />
                     <div className="flex-1">
                       <h3 className="font-semibold">{item?.name}</h3>
-                      <p className="text-yellow-600 font-bold">
-                        ${item?.price.toFixed(2)}
-                      </p>
+                      <p className="font-bold">${item?.price.toFixed(2)}</p>
 
                       <div className="flex items-center gap-2 mt-1">
                         <div className="join">

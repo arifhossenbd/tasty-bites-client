@@ -1,8 +1,10 @@
-import { useState, useEffect } from 'react';
-import { FaArrowUp } from 'react-icons/fa';
+import { useState, useEffect } from "react";
+import { FaArrowUp } from "react-icons/fa";
+import { useTheme } from "../../hooks/useTheme";
 
 const ScrollToTopButton = () => {
   const [isVisible, setIsVisible] = useState(false);
+  const { currentTheme } = useTheme();
 
   useEffect(() => {
     const toggleVisibility = () => {
@@ -13,14 +15,14 @@ const ScrollToTopButton = () => {
       }
     };
 
-    window.addEventListener('scroll', toggleVisibility);
-    return () => window.removeEventListener('scroll', toggleVisibility);
+    window.addEventListener("scroll", toggleVisibility);
+    return () => window.removeEventListener("scroll", toggleVisibility);
   }, []);
 
   const scrollToTop = () => {
     window.scrollTo({
       top: 0,
-      behavior: 'smooth'
+      behavior: "smooth",
     });
   };
 
@@ -29,7 +31,7 @@ const ScrollToTopButton = () => {
       {isVisible && (
         <button
           onClick={scrollToTop}
-          className="p-3 bg-yellow-400 hover:bg-yellow-500 text-white rounded-full shadow-lg transition-all duration-300 transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-opacity-50"
+          className={`p-3 rounded-full shadow-lg transition-all duration-300 transform hover:scale-110 focus:outline-none ${currentTheme.inactiveBtn}`}
           aria-label="Scroll to top"
         >
           <FaArrowUp className="w-5 h-5" />

@@ -3,39 +3,46 @@ body{
     font-family: 'Inter', sans-serif;
 }
 
+/* ===== Base Scrollbar Styling ===== */
+/* Ensures fallback if JavaScript is disabled */
+:root {
+  --scrollbar-thumb: #78716c; /* Default stone-500 */
+  --scrollbar-track: #fafaf9; /* Default stone-50 */
+  --scrollbar-thumb-hover: #57534e; /* Default stone-700 */
+}
+
+/* Firefox scrollbar (uses CSS variables) */
 html {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
   scroll-behavior: smooth;
+}
+
+/* WebKit scrollbars (Chrome, Safari, Edge) */
+/* These will be enhanced by the ThemeProvider's dynamic styles */
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 6px;
+  border: 3px solid var(--scrollbar-track);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover);
 }
 
 body {
   @apply transition-colors duration-300;
 }
 
-/* For WebKit browsers (Chrome, Safari) */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: #fff4f4;
-  border-radius: 10px;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #fcd34d; /* yellow-300 */
-  border-radius: 10px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #fbbf24; /* yellow-400 */
-}
-
-/* For Firefox */
-* {
-  scrollbar-width: thin;
-  scrollbar-color: #fcd34d #f1f1f1;
-}
   
 @tailwind base;
 @tailwind components;

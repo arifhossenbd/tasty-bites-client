@@ -1,36 +1,37 @@
 # 🍽️ Tasty Bites - Restaurant Management System
 
-A full-stack MERN-based restaurant management platform designed to streamline online food ordering and manage restaurant operations efficiently.
+A full-stack MERN-based restaurant management platform for online food ordering and restaurant operations.
+
+[![Live Demo](https://img.shields.io/badge/Live_Demo-Available-green?style=for-the-badge)](https://tasty-bites-67c7d.web.app/)
 
 ## 🌟 Features
 
 ### 🔐 Authentication
-- Secure JWT-based authentication
+- JWT-based authentication
 - Email/password login
 - Social login (Google, Facebook)
 - Protected routes
 
 ### 🍔 Food Management
 - Add/Update/Delete menu items
-- Food categorization
-- Inventory tracking integration
+- Food categories
+- Inventory tracking
 
 ### 🛒 Order System
-- Add to cart with quantity control
-- Order history tracking
-- Real-time order status updates
-- Checkout process with order summary
+- Shopping cart functionality
+- Order history
+- Order status updates
+- Checkout process
 
 ### 🔍 Discovery
-- Advanced search functionality
-- Pagination for menu browsing
-- Filtering by categories, dietary needs
-- Food gallery with high-quality images
+- Search functionality
+- Category filtering
+- Food images
 
 ### 📱 Responsive Design
-- Mobile-first approach
-- Tablet and desktop optimized
-- Accessible UI components
+- Mobile-friendly layout
+- Works on all devices
+- Clean UI
 
 ## 🖥️ Tech Stack
 
@@ -38,30 +39,32 @@ A full-stack MERN-based restaurant management platform designed to streamline on
 | Technology | Purpose |
 |------------|---------|
 | React.js | Frontend framework |
-| TailwindCSS | Utility-first CSS |
-| Framer Motion | Animations |
+| TailwindCSS | Styling |
+| Axios | API requests |
 | React Router | Navigation |
-| React Hot Toast | Notifications |
-| Axios | HTTP requests |
 
 ### Backend
 | Technology | Purpose |
 |------------|---------|
-| Node.js | Runtime environment |
-| Express.js | Server framework |
+| Node.js | Runtime |
+| Express.js | Server |
 | MongoDB | Database |
-| Firebase Auth | Authentication |
-| JWT | Secure tokens |
+| Firebase | Authentication |
 
-## 🚀 Getting Started
+## 🚀 Live Demo
 
-### Prerequisites
-- Node.js (v16+)
-- MongoDB Atlas account
-- Firebase project
+Available at:  
+🔗 [https://tasty-bites-67c7d.web.app/](https://tasty-bites-67c7d.web.app/)
+
+## 🛠️ Setup
+
+### Requirements
+- Node.js
+- MongoDB
+- Firebase
 
 ### Installation
-1. Clone both repositories:
+1. Clone repositories:
 ```bash
 git clone https://github.com/arifhossenbd/tasty-bites-client.git
 git clone https://github.com/arifhossenbd/tasty-bites-server.git

@@ -4,12 +4,24 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useAuth } from "../../hooks/useAuth";
 import { authError } from "../../utils/AuthToast";
+import { useTheme } from "../../hooks/useTheme";
 
 const SignUp = () => {
   const { signUp, loading } = useAuth();
-  const { state } = useLocation();
+  const { currentTheme } = useTheme();
+  const location = useLocation();
   const navigate = useNavigate();
-  const from = state?.pathname || "/";
+  const from = location?.state?.from || "/";
+
+  const {
+    textColor,
+    cardTextColor,
+    inputBgColor,
+    inputTextColor,
+    primaryBtnBgColor,
+    primaryBtnTextColor,
+    primaryTextColor
+  } = currentTheme;
 
   const handleSignUp = async (e) => {
     e.preventDefault();
@@ -19,7 +31,6 @@ const SignUp = () => {
     const passwordRegex =
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()\-_=+{};:,<.>]).{8,}$/;
 
-    // Early validation checks
     if (!passwordRegex.test(password)) {
       authError({
         message:
@@ -37,11 +48,14 @@ const SignUp = () => {
       }
     }
   };
+
   return (
     <AuthForm
       handleForm={handleSignUp}
+      imgName="banner5.jpg"
       btnText="Sign Up"
       loading={loading}
+      subtitle="Sign up to create a new account"
       header={
         <div className="w-full">
           <figure>
@@ -52,8 +66,8 @@ const SignUp = () => {
               loading="lazy"
             />
           </figure>
-          <h2 className="card-title flex items-center justify-center mt-4 gap-2">
-            <FaUserPlus /> Join Tasty Bites
+          <h2 className={`card-title flex items-center justify-center mt-4 gap-2 ${textColor}`}>
+            <FaUserPlus className={primaryTextColor} /> Join Tasty Bites
           </h2>
         </div>
       }
@@ -61,48 +75,48 @@ const SignUp = () => {
         <fieldset className="fieldset space-y-2">
           <div>
             <label htmlFor="photo" className="label">
-              <span className="text-sm mb-1 flex items-center gap-2">
-                <FaCamera /> Profile Photo URL
+              <span className={`text-sm mb-1 flex items-center gap-2 ${cardTextColor}`}>
+                <FaCamera className={primaryTextColor} /> Profile Photo URL
               </span>
             </label>
             <motion.input
-              initial={{ opacity: 0, backgroundColor: "#A8A29E" }}
-              animate={{ opacity: 1, backgroundColor: "#ffffff" }}
+              initial={{ opacity: 0, backgroundColor: inputBgColor }}
+              animate={{ opacity: 1, backgroundColor: inputBgColor }}
               transition={{ duration: 0.5, delay: 0.3 }}
               whileFocus={{
                 scale: 1.02,
-                backgroundColor: "#57534E",
-                color: "#ffffff",
+                backgroundColor: primaryBtnBgColor,
+                color: primaryBtnTextColor,
                 transition: { duration: 0.2 },
               }}
               id="photo"
               type="url"
               name="photo"
-              className="input w-full rounded-md outline-none focus:outline-none shadow-none border-none focus:placeholder-white"
+              className={`input w-full rounded-md outline-none focus:outline-none shadow-none border-none ${inputBgColor} ${inputTextColor}`}
               placeholder="https://example/photo.jpg"
               pattern="https://.*"
             />
           </div>
           <div>
             <label htmlFor="name" className="label">
-              <span className="text-sm mb-1 flex items-center gap-2">
-                <FaInfo /> Full Name
+              <span className={`text-sm mb-1 flex items-center gap-2 ${cardTextColor}`}>
+                <FaInfo className={primaryTextColor} /> Full Name
               </span>
             </label>
             <motion.input
-              initial={{ opacity: 0, backgroundColor: "#A8A29E" }}
-              animate={{ opacity: 1, backgroundColor: "#ffffff" }}
+              initial={{ opacity: 0, backgroundColor: inputBgColor }}
+              animate={{ opacity: 1, backgroundColor: inputBgColor }}
               transition={{ duration: 0.5, delay: 0.3 }}
               whileFocus={{
                 scale: 1.02,
-                backgroundColor: "#57534E",
-                color: "#ffffff",
+                backgroundColor: primaryBtnBgColor,
+                color: primaryBtnTextColor,
                 transition: { duration: 0.2 },
               }}
               id="name"
               type="text"
               name="name"
-              className="input w-full rounded-md outline-none focus:outline-none shadow-none border-none focus:placeholder-white"
+              className={`input w-full rounded-md outline-none focus:outline-none shadow-none border-none ${inputBgColor} ${inputTextColor}`}
               placeholder="Arif Hossen"
               minLength="2"
             />
@@ -110,17 +124,17 @@ const SignUp = () => {
         </fieldset>
       }
       footer={
-        <p className="text-center mt-4">
+        <p className={`text-center mt-4 ${cardTextColor}`}>
           Already have an account? Please{" "}
           <Link
             to="/sign-in"
-            className="link hover:text-yellow-600 dark:text-stone-50"
+            className={`link ${primaryTextColor} transition-colors opacity-80 hover:opacity-100`}
           >
             Sign In
           </Link>
         </p>
       }
-    ></AuthForm>
+    />
   );
 };
 

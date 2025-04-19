@@ -4,6 +4,7 @@ import Loading from "../../component/Loading/Loading";
 import DataStatus from "../../component/DataStatus/DataStatus";
 import PageHeader from "../../component/PageHeader/PageHeader";
 import { useAuth } from "../../hooks/useAuth";
+import { useTheme } from "../../hooks/useTheme";
 import {
   FaSearch,
   FaSort,
@@ -27,7 +28,8 @@ const MyFoods = () => {
   });
   const { loading, error, getSecureData } = useApi();
   const { user } = useAuth();
-  const email = user?.email
+  const { currentTheme } = useTheme();
+  const email = user?.email;
 
   // Fetch all foods on component mount
   const fetchFoods = useCallback(async () => {
@@ -41,7 +43,7 @@ const MyFoods = () => {
     fetchFoods();
   }, []);
 
-  // In the useMemo where sorting happens:
+  // Filter and sort foods
   const { filteredFoods, totalItems } = useMemo(() => {
     let result = [...allFoods];
 
@@ -58,7 +60,6 @@ const MyFoods = () => {
     // Apply sorting
     if (sortConfig.field) {
       result?.sort((a, b) => {
-        // Special handling for price (numeric sorting)
         if (sortConfig.field === "price") {
           const valueA = parseFloat(a.price) || 0;
           const valueB = parseFloat(b.price) || 0;
@@ -67,7 +68,6 @@ const MyFoods = () => {
             : valueB - valueA;
         }
 
-        // Default string sorting for other fields
         const fieldA = a[sortConfig.field]?.toString().toLowerCase() || "";
         const fieldB = b[sortConfig.field]?.toString().toLowerCase() || "";
 
@@ -95,7 +95,7 @@ const MyFoods = () => {
       direction = sortConfig.direction === "asc" ? "desc" : "asc";
     }
     setSortConfig({ field, direction });
-    setPage(1); // Reset to first page when sorting changes
+    setPage(1);
   };
 
   // Render sort icon
@@ -137,7 +137,7 @@ const MyFoods = () => {
       path="/add-food"
       btnText="Add Food"
       message="Your foods not found"
-      data={filteredFoods || filteredFoods}
+      data={filteredFoods}
       onRetry={fetchFoods}
     >
       <PageHeader
@@ -150,152 +150,181 @@ const MyFoods = () => {
         ]}
         backgroundImage="/tasty-bites-images/banner/banner6.jpg"
       />
-      <div className="px-4 md:px-0 md:w-11/12 lg:w-10/12 mx-auto">
-        {/* Search and Limit Controls */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 my-6">
-          <div className="relative w-full md:w-64">
-            <input
-              type="text"
-              placeholder="Search foods..."
-              value={searchTerm}
-              onChange={(e) => {
-                setSearchTerm(e.target.value);
-                setPage(1);
-              }}
-              className="w-full pl-10 pr-4 py-2 border rounded-full focus:outline-none focus:ring-2 focus:ring-yellow-500"
-            />
-            <FaSearch className="absolute left-3 top-3 text-gray-400" />
-          </div>
-
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-gray-600">Items per page:</span>
-            <select
-              value={limit}
-              onChange={(e) => {
-                setLimit(Number(e.target.value));
-                setPage(1);
-              }}
-              className="border rounded px-2 py-1 text-sm"
-            >
-              {[5, 10, 20, 50].map((size) => (
-                <option key={size} value={size}>
-                  {size}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
-
-        {/* Food Items Table */}
-        <div className="overflow-x-auto mt-4">
-          <table className="min-w-full bg-white overflow-hidden">
-            <thead className="bg-yellow-100">
-              <tr>
-                <th className="py-3 px-4 text-left">Image</th>
-                <th
-                  className="py-3 px-4 text-left cursor-pointer hover:bg-yellow-200 transition-colors"
-                  onClick={() => handleSort("name")}
-                >
-                  <div className="flex items-center">
-                    Name
-                    {sortIcons("name")}
-                  </div>
-                </th>
-                <th
-                  className="py-3 px-4 text-left cursor-pointer hover:bg-yellow-200 transition-colors"
-                  onClick={() => handleSort("category")}
-                >
-                  <div className="flex items-center">
-                    Category
-                    {sortIcons("category")}
-                  </div>
-                </th>
-                <th
-                  className="py-3 px-4 text-left cursor-pointer hover:bg-yellow-200 transition-colors"
-                  onClick={() => handleSort("price")}
-                >
-                  <div className="flex items-center">
-                    Price
-                    {sortIcons("price")}
-                  </div>
-                </th>
-                <th className="py-3 px-4 text-left">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200">
-              {filteredFoods.map((food) => (
-                <MyFood
-                  key={food?._id}
-                  food={food}
-                  setAllFoods={setAllFoods}
-                  allFoods={allFoods}
-                />
-              ))}
-            </tbody>
-          </table>
-        </div>
-
-        {/* Enhanced Pagination Controls */}
-        {totalItems > 0 && (
-          <div className="flex flex-row flex-wrap justify-between items-center gap-4 mt-6">
-            <div className="text-sm text-gray-600">
-              Showing {(page - 1) * limit + 1} to{" "}
-              {Math.min(page * limit, totalItems)} of {totalItems} items
+      <div className={currentTheme.bgColor}>
+        <div className="px-4 md:px-0 md:w-11/12 lg:w-10/12 mx-auto py-6 md:py-8 lg:py-12">
+          {/* Search and Limit Controls */}
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div className={`relative w-full md:w-64`}>
+              <input
+                type="text"
+                placeholder="Search foods..."
+                value={searchTerm}
+                onChange={(e) => {
+                  setSearchTerm(e.target.value);
+                  setPage(1);
+                }}
+                className={`w-full pl-10 pr-4 py-2 border ${currentTheme.borderColor} focus:outline-none rounded-full ${currentTheme.inputBgColor} ${currentTheme.inputTextColor}`}
+              />
+              <FaSearch
+                className={`absolute left-3 top-3 ${currentTheme.inputTextColor}`}
+              />
             </div>
 
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => setPage(1)}
-                disabled={page === 1}
-                className="p-2 border rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-yellow-50 transition-colors"
-                title="First Page"
+            <div className={`flex items-center gap-2 ${currentTheme.textColor}`}>
+              <span className="text-sm">Items per page:</span>
+              <select
+                value={limit}
+                onChange={(e) => {
+                  setLimit(Number(e.target.value));
+                  setPage(1);
+                }}
+                className={`border rounded px-2 py-1 text-sm ${currentTheme.inputBgColor} ${currentTheme.inputTextColor} ${currentTheme.borderColor}`}
               >
-                <FaAngleDoubleLeft />
-              </button>
-              <button
-                onClick={() => setPage(Math.max(1, page - 1))}
-                disabled={page === 1}
-                className="p-2 border rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-yellow-50 transition-colors"
-                title="Previous Page"
-              >
-                <FaAngleLeft />
-              </button>
-
-              <div className="flex gap-1">
-                {paginationRange.map((pageNumber) => (
-                  <button
-                    key={pageNumber}
-                    onClick={() => setPage(pageNumber)}
-                    className={`w-10 h-10 flex items-center justify-center border rounded ${
-                      page === pageNumber
-                        ? "bg-yellow-500 text-white"
-                        : "hover:bg-yellow-50"
-                    } transition-colors`}
-                  >
-                    {pageNumber}
-                  </button>
+                {[5, 10, 20, 50].map((size) => (
+                  <option key={size} value={size}>
+                    {size}
+                  </option>
                 ))}
+              </select>
+            </div>
+          </div>
+
+          {/* Food Items Table */}
+          <div className="overflow-x-auto mt-4">
+            <table className={`min-w-full overflow-hidden ${currentTheme.bgColor}`}>
+              <thead className="">
+                <tr className={`${currentTheme.navBgColor} ${currentTheme.navTextColor}`}>
+                  <th className="py-3 px-4 text-left">Image</th>
+                  <th
+                    className="py-3 px-4 text-left cursor-pointer hover:bg-opacity-80 transition-colors"
+                    onClick={() => handleSort("name")}
+                  >
+                    <div className="flex items-center">
+                      Name
+                      {sortIcons("name")}
+                    </div>
+                  </th>
+                  <th
+                    className="py-3 px-4 text-left cursor-pointer hover:bg-opacity-80 transition-colors"
+                    onClick={() => handleSort("category")}
+                  >
+                    <div className="flex items-center">
+                      Category
+                      {sortIcons("category")}
+                    </div>
+                  </th>
+                  <th
+                    className="py-3 px-4 text-left cursor-pointer hover:bg-opacity-80 transition-colors"
+                    onClick={() => handleSort("price")}
+                  >
+                    <div className="flex items-center">
+                      Price
+                      {sortIcons("price")}
+                    </div>
+                  </th>
+                  <th className="py-3 px-4 text-left">Actions</th>
+                </tr>
+              </thead>
+              <tbody className={`divide-y ${currentTheme.borderColor}`}>
+                {filteredFoods.map((food) => (
+                  <MyFood
+                    key={food?._id}
+                    food={food}
+                    setAllFoods={setAllFoods}
+                    allFoods={allFoods}
+                  />
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Enhanced Pagination Controls */}
+          {totalItems > 0 && (
+            <div className="flex flex-row flex-wrap justify-between items-center gap-4 mt-6">
+              <div className={`text-sm ${currentTheme.textColor}`}>
+                Showing {(page - 1) * limit + 1} to{" "}
+                {Math.min(page * limit, totalItems)} of {totalItems} items
               </div>
 
-              <button
-                onClick={() => setPage(Math.min(totalPages, page + 1))}
-                disabled={page === totalPages}
-                className="p-2 border rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-yellow-50 transition-colors"
-                title="Next Page"
-              >
-                <FaAngleRight />
-              </button>
-              <button
-                onClick={() => setPage(totalPages)}
-                disabled={page === totalPages}
-                className="p-2 border rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-yellow-50 transition-colors"
-                title="Last Page"
-              >
-                <FaAngleDoubleRight />
-              </button>
+              <div className="flex items-center gap-2">
+                {/* First Page Button */}
+                <button
+                  onClick={() => setPage(1)}
+                  disabled={page === 1}
+                  className={`p-2 rounded transition-colors ${
+                    page === 1
+                      ? `${currentTheme.inactiveBtn} cursor-not-allowed`
+                      : `${currentTheme.activeBtn}`
+                  }`}
+                  title="First Page"
+                >
+                  <FaAngleDoubleLeft className={currentTheme.textColor} />
+                </button>
+
+                {/* Previous Page Button */}
+                <button
+                  onClick={() => setPage(Math.max(1, page - 1))}
+                  disabled={page === 1}
+                  className={`p-2 rounded transition-colors ${
+                    page === 1
+                      ? `${currentTheme.inactiveBtn} cursor-not-allowed`
+                      : `${currentTheme.activeBtn}`
+                  }`}
+                  title="Previous Page"
+                >
+                  <FaAngleLeft className={currentTheme.textColor} />
+                </button>
+
+                {/* Page Number Buttons */}
+                <div className="flex gap-1">
+                  {paginationRange.map((pageNumber) => (
+                    <button
+                      key={pageNumber}
+                      onClick={() => setPage(pageNumber)}
+                      className={`w-10 h-10 flex items-center justify-center rounded transition-colors ${
+                        page === pageNumber
+                          ? `${currentTheme.activeBtn} font-bold`
+                          : `${currentTheme.inactiveBtn}`
+                      }`}
+                    >
+                      <span>
+                        {pageNumber}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+
+                {/* Next Page Button */}
+                <button
+                  onClick={() => setPage(Math.min(totalPages, page + 1))}
+                  disabled={page === totalPages}
+                  className={`p-2 rounded transition-colors ${
+                    page === totalPages
+                      ? `${currentTheme.inactiveBtn} cursor-not-allowed`
+                      : `${currentTheme.activeBtn}`
+                  }`}
+                  title="Next Page"
+                >
+                  <FaAngleRight className={currentTheme.textColor} />
+                </button>
+
+                {/* Last Page Button */}
+                <button
+                  onClick={() => setPage(totalPages)}
+                  disabled={page === totalPages}
+                  className={`p-2 rounded transition-colors ${
+                    page === totalPages
+                      ? `${currentTheme.inactiveBtn} cursor-not-allowed`
+                      : `${currentTheme.activeBtn}`
+                  }`}
+                  title="Last Page"
+                >
+                  <FaAngleDoubleRight className={currentTheme.textColor} />
+                </button>
+              </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </DataStatus>
   );

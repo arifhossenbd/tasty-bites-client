@@ -1,5 +1,6 @@
 import { NavLink } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useTheme } from "../../hooks/useTheme";
 
 const PageHeader = ({
   title,
@@ -8,8 +9,16 @@ const PageHeader = ({
   backgroundImage,
   children,
 }) => {
+  const { currentTheme } = useTheme();
+  const {
+    navBgColor,
+    navTextColor,
+    footerTextColor,
+    inactiveText,
+  } = currentTheme;
+
   return (
-    <div className="relative h-72 w-full overflow-hidden bg-stone-900 mb-6 md:mb-8 lg:mb-12">
+    <div className={`relative h-72 w-full overflow-hidden ${navBgColor} mt-16`}>
       {/* Background Image (dynamic) */}
       {backgroundImage && (
         <img
@@ -27,7 +36,7 @@ const PageHeader = ({
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
-            className="flex items-center text-sm text-white mb-4"
+            className={`flex items-center text-sm ${navTextColor} mb-4`}
           >
             {breadcrumbs.map((crumb, index) => (
               <div key={index} className="flex items-center">
@@ -35,12 +44,12 @@ const PageHeader = ({
                 {crumb.path ? (
                   <NavLink
                     to={crumb.path}
-                    className="hover:text-yellow-300 transition-colors"
+                    className={`${inactiveText} transition-colors`}
                   >
                     {crumb.name}
                   </NavLink>
                 ) : (
-                  <span className="text-yellow-300 font-medium">
+                  <span className={`${inactiveText} font-medium`}>
                     {crumb.name}
                   </span>
                 )}
@@ -54,7 +63,7 @@ const PageHeader = ({
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, delay: 0.1 }}
-          className="text-4xl md:text-5xl font-bold text-white mb-2"
+          className={`text-4xl md:text-5xl font-bold ${navTextColor} mb-2`}
         >
           {title}
         </motion.h1>
@@ -64,13 +73,11 @@ const PageHeader = ({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.3, delay: 0.2 }}
-            className="text-lg text-stone-200 max-w-2xl"
+            className={`text-lg ${footerTextColor} max-w-2xl`}
           >
             {subtitle}
           </motion.p>
         )}
-
-        {/* Additional children content */}
         {children}
       </div>
     </div>

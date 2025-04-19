@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import PrimaryBtn from "../Buttons/PrimaryBtn";
 import Loading from "../Loading/Loading";
 import { FiAlertTriangle, FiFrown, FiRefreshCw } from "react-icons/fi";
+import { useTheme } from "../../hooks/useTheme";
 
 const DataStatus = ({
   error,
@@ -14,10 +15,25 @@ const DataStatus = ({
   onRetry,
   children,
 }) => {
+  const { currentTheme } = useTheme();
+  const {
+    textColor,
+    cardTextColor,
+    primaryBtnBgColor,
+    primaryBtnTextColor,
+    primaryBtnHoverBgColor,
+    accentColor,
+    highlightColor,
+    dangerColor,
+    dangerBgColor,
+    warningColor,
+    warningBgColor
+  } = currentTheme;
 
   if (loading || !data) {
     return <Loading />;
   }
+
   const hasData = () => {
     if (data === undefined || data === null) return false;
     if (Array.isArray(data)) return data.length > 0;
@@ -27,28 +43,33 @@ const DataStatus = ({
 
   if (error) {
     return (
-      <div className="text-center py-10 md:py-12 flex flex-col items-center justify-center gap-6">
-        <div className="p-4 bg-red-100 rounded-full">
-          <FiAlertTriangle className="text-red-500 text-3xl" />
+      <div className={`text-center pt-24 md:pt-28 lg:pt-32 flex flex-col items-center justify-center gap-6 ${textColor}`}>
+        <div className={`p-4 ${dangerBgColor} rounded-full`}>
+          <FiAlertTriangle className={`${dangerColor} text-3xl`} />
         </div>
         <div className="space-y-2 max-w-md">
-          <h2 className="text-2xl font-bold text-stone-700">Error Occurred</h2>
-          <p className="text-stone-600">
-            {error?.message ||
-              error ||
-              "Something went wrong. Please try again."}
+          <h2 className="text-2xl font-bold">Error Occurred</h2>
+          <p className={cardTextColor}>
+            {error?.message || error || "Something went wrong. Please try again."}
           </p>
         </div>
         <div className="flex flex-col-reverse md:flex-row items-center gap-3">
           <Link to={path}>
-            <PrimaryBtn btnText={btnText} />
+            <PrimaryBtn 
+              btnText={btnText}
+              bgColor={primaryBtnBgColor}
+              textColor={primaryBtnTextColor}
+              hoverBgColor={primaryBtnHoverBgColor}
+            />
           </Link>
           {onRetry && (
             <PrimaryBtn
               onClick={onRetry}
               btnText="Retry"
               icon={<FiRefreshCw className="mr-2" />}
-              style="bg-red-600 hover:bg-red-700"
+              bgColor={dangerColor.replace('text-', 'bg-')}
+              textColor="text-white"
+              hoverBgColor={dangerColor.replace('text-', 'bg-').replace('00', '00')}
             />
           )}
         </div>
@@ -58,24 +79,31 @@ const DataStatus = ({
 
   if (!hasData()) {
     return (
-      <div className="text-center py-10 md:py-12 flex flex-col items-center justify-center gap-6">
-        <div className="p-4 bg-yellow-100 rounded-full">
-          <FiFrown className="text-yellow-500 text-3xl" />
+      <div className={`text-center pt-24 md:pt-28 lg:pt-32 flex flex-col items-center justify-center gap-6 ${textColor}`}>
+        <div className={`p-4 ${warningBgColor} rounded-full`}>
+          <FiFrown className={`${warningColor} text-3xl`} />
         </div>
         <div className="space-y-2 max-w-md">
-          <h2 className="text-2xl font-bold text-stone-700">{title}</h2>
-          <p className="text-stone-600">{message}</p>
+          <h2 className="text-2xl font-bold">{title}</h2>
+          <p className={cardTextColor}>{message}</p>
         </div>
         <div className="flex flex-col-reverse md:flex-row items-center gap-3">
           <Link to={path}>
-            <PrimaryBtn btnText={btnText} />
+            <PrimaryBtn 
+              btnText={btnText}
+              bgColor={primaryBtnBgColor}
+              textColor={primaryBtnTextColor}
+              hoverBgColor={primaryBtnHoverBgColor}
+            />
           </Link>
           {onRetry && (
             <PrimaryBtn
               onClick={onRetry}
               btnText="Refresh"
               icon={<FiRefreshCw className="mr-2" />}
-              style="bg-blue-600 hover:bg-blue-700"
+              bgColor={accentColor}
+              textColor="text-white"
+              hoverBgColor={highlightColor}
             />
           )}
         </div>

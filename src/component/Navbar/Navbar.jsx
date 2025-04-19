@@ -13,23 +13,35 @@ const Navbar = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const { user, signOut, loading } = useAuth();
   const { totalQuantity, totalPrice } = useCart();
-  const {apply} = useTheme()
+  const { currentTheme } = useTheme();
+  const {
+    navBgColor,
+    cardBgColor,
+    cardTextColor,
+    inactiveBtn,
+    activeBtn,
+    textColor,
+    activeText,
+    primaryBtn,
+    inactiveText,
+    footerBgColor,
+    footerTextColor,
+  } = currentTheme;
+
   const link = links?.map((link) => (
     <li key={link.id}>
-      <NavLink
-        className={({ isActive }) =>
-          isActive
-            ? `text-yellow-500 ${transitionNoDelay}`
-            : `hover:text-yellow-500 ${transitionNoDelay}`
-        }
+      <NavLink className={({ isActive }) => isActive ? `${activeText}` : `${inactiveText} transition-colors duration-200`}
         to={link?.path}
       >
         {link?.name}
       </NavLink>
     </li>
   ));
+
   return (
-    <div className={apply ? `${apply("bg")} fixed z-50 w-full bg-base-100 shadow-sm` : "fixed z-50 w-full bg-base-100 shadow-sm"}>
+    <div
+      className={`fixed z-50 top-0 w-full ${navBgColor} shadow-sm`}
+    >
       <div className="navbar flex items-center justify-between gap-2 md:gap-0 px-4 md:px-0 md:w-11/12 lg:w-10/12 mx-auto">
         <div className="dropdown dropdown-hover lg:hidden">
           <div tabIndex={0} role="button" className="lg:hidden">
@@ -50,16 +62,13 @@ const Navbar = () => {
           </div>
           <ul
             tabIndex={0}
-            className="dropdown-content bg-base-100 rounded-box z-1 w-52 p-2 shadow"
+            className={`dropdown-content rounded-box z-1 w-52 p-2 shadow`}
           >
             {link}
           </ul>
         </div>
         <div>
-          <NavLink
-            to="/"
-            className={`text-3xl font-yesterYear text-yellow-400`}
-          >
+          <NavLink to="/" className={`text-3xl font-yesterYear ${activeText}`}>
             Tasty Bites
           </NavLink>
         </div>
@@ -67,7 +76,7 @@ const Navbar = () => {
           <ul className="flex items-center gap-3">{link}</ul>
         </div>
         <div className="">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
             <div
               className={`dropdown dropdown-end relative ${
                 !isDrawerOpen && "dropdown-hover"
@@ -76,11 +85,15 @@ const Navbar = () => {
               <div
                 tabIndex={0}
                 role="button"
-                className="btn btn-ghost btn-circle hover:bg-yellow-50 group"
+                className={`btn btn-ghost hover:bg-transparent btn-circle group`}
               >
                 <div className="indicator">
-                  <FaShoppingCart className="text-lg md:text-xl group-hover:text-yellow-500 transition-all duration-200 ease-linear" />
-                  <span className="rounded-full w-5 h-5 bg-yellow-500 text-white absolute -top-3 -right-4">
+                  <FaShoppingCart
+                    className={`text-lg md:text-xl ${footerTextColor} hover:transition-colors transition-all duration-200 ease-linear`}
+                  />
+                  <span
+                    className={`rounded-full w-5 h-5 ${cardBgColor} ${textColor} absolute -top-3 -right-5`}
+                  >
                     {totalQuantity ? totalQuantity : 0}
                   </span>
                 </div>
@@ -88,19 +101,19 @@ const Navbar = () => {
               {!isDrawerOpen && (
                 <div
                   tabIndex={0}
-                  className="dropdown-content bg-base-100 z-1 w-52 rounded-box shadow"
+                  className={`dropdown-content ${cardBgColor} ${textColor} z-1 w-52 rounded-box shadow`}
                 >
                   <div className="card-body">
-                    <span className="text-lg font-bold text-stone-500">
+                    <span className={`text-lg font-bold ${textColor}`}>
                       {totalQuantity ? totalQuantity : 0} Items
                     </span>
-                    <span className="text-info">
-                      Subtotal: ${totalPrice ? totalPrice : 0.0}
+                    <span className={`${textColor}`}>
+                      Subtotal: ${totalPrice ? totalPrice.toFixed(2) : 0.0}
                     </span>
                     <div className="card-actions mt-2">
                       <button
                         onClick={() => setIsDrawerOpen(true)}
-                        className="bg-yellow-200 btn hover:bg-yellow-100 text-yellow-700 hover:text-yellow-600 w-full transition-all duration-200 ease-in-out"
+                        className={`btn ${inactiveBtn} w-full transition-all duration-200 ease-in-out`}
                       >
                         View Cart
                       </button>
@@ -117,7 +130,9 @@ const Navbar = () => {
               )}
             </div>
             {loading ? (
-              <div className="w-10 rounded-full bg-yellow-500 h-10 skeleton"></div>
+              <div
+                className={`w-10 rounded-full ${textColor} h-10 skeleton`}
+              ></div>
             ) : (
               <div>
                 {user ? (
@@ -128,7 +143,9 @@ const Navbar = () => {
                       className="btn btn-ghost btn-circle avatar"
                     >
                       {loading ? (
-                        <div className="w-10 rounded-full bg-yellow-500 h-10 skeleton"></div>
+                        <div
+                          className={`w-10 rounded-full ${textColor} h-10 skeleton`}
+                        ></div>
                       ) : (
                         <div className="w-10 rounded-full">
                           <img src={user?.photoURL} alt={user?.displayName} />
@@ -137,27 +154,19 @@ const Navbar = () => {
                     </div>
                     <ul
                       tabIndex={0}
-                      className="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm"
+                      className={`dropdown-content menu ${cardBgColor} ${cardTextColor} space-y-2 rounded-box z-1 w-52 p-2 shadow-sm`}
                     >
                       <li>
                         <NavLink
-                          className={({ isActive }) =>
-                            isActive
-                              ? `text-yellow-500 ${transitionNoDelay}`
-                              : `hover:text-yellow-500 ${transitionNoDelay}`
-                          }
-                          to="/add-food"
+                          className={({ isActive }) => isActive ? `${activeBtn}` : `${textColor}`}
+                            to="/add-food"
                         >
                           Add Food
                         </NavLink>
                       </li>
                       <li>
                         <NavLink
-                          className={({ isActive }) =>
-                            isActive
-                              ? `text-yellow-500 ${transitionNoDelay}`
-                              : `hover:text-yellow-500 ${transitionNoDelay}`
-                          }
+                          className={({ isActive }) => isActive ? `${activeBtn}` : `${textColor}`}
                           to="/my-foods"
                         >
                           My Foods
@@ -165,11 +174,7 @@ const Navbar = () => {
                       </li>
                       <li>
                         <NavLink
-                          className={({ isActive }) =>
-                            isActive
-                              ? `text-yellow-500 ${transitionNoDelay}`
-                              : `hover:text-yellow-500 ${transitionNoDelay}`
-                          }
+                          className={({ isActive }) => isActive ? `${activeBtn}` : `${textColor}`}
                           to="/my-orders"
                         >
                           My Orders
@@ -177,11 +182,7 @@ const Navbar = () => {
                       </li>
                       <li>
                         <NavLink
-                          className={({ isActive }) =>
-                            isActive
-                              ? `text-yellow-500 ${transitionNoDelay}`
-                              : `hover:text-yellow-500 ${transitionNoDelay}`
-                          }
+                          className={({ isActive }) => isActive ? `${activeBtn}` : `${textColor}`}
                           to="/wishlist"
                         >
                           Wishlist
@@ -192,8 +193,8 @@ const Navbar = () => {
                           to="/profile"
                           className={({ isActive }) =>
                             isActive
-                              ? `text-yellow-500 justify-between ${transitionNoDelay}`
-                              : `hover:text-yellow-500 justify-between ${transitionNoDelay}`
+                              ? `${textColor} justify-between ${transitionNoDelay}`
+                              : `hover:${textColor} justify-between ${transitionNoDelay}`
                           }
                         >
                           Profile
@@ -202,7 +203,7 @@ const Navbar = () => {
                       </li>
                       <li>
                         <button
-                          className="text-blue-500"
+                          className={`${inactiveBtn}`}
                           onClick={() => signOut()}
                         >
                           Sign Out
@@ -214,10 +215,10 @@ const Navbar = () => {
                   <div>
                     <Link
                       to="/sign-in"
-                      className={`${transitionNoDelay} hover:text-yellow-500 font-semibold flex items-center gap-1 group`}
+                      className={`${transitionNoDelay} hover:${textColor} font-semibold flex items-center gap-1 group`}
                     >
                       <FiArrowRightCircle
-                        className={`${transitionNoDelay} group-hover:translate-x-0 hover:text-yellow-600 group-hover:opacity-100 -translate-x-1 opacity-0`}
+                        className={`${transitionNoDelay} group-hover:translate-x-0 hover:${textColor} group-hover:opacity-100 -translate-x-1 opacity-0`}
                       />
                       Sign In
                     </Link>

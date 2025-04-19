@@ -3,12 +3,14 @@ import FoodForm from "../../component/FoodForm/FoodForm";
 import PageHeader from "../../component/PageHeader/PageHeader";
 import useApi from "../../hooks/useApi";
 import { showErrorToast, showSuccessToast } from "../../utils/CrudToast";
+import { useTheme } from "../../hooks/useTheme";
 
 const AddFood = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const from = location?.state?.from || "/foods";
   const { createData } = useApi();
+  const { currentTheme } = useTheme();
   const date = Date.now();
   const handleAddFood = async (data) => {
     const res = await createData("/add/food", {
@@ -34,7 +36,7 @@ const AddFood = () => {
     }
   };
   return (
-    <div>
+    <div className={currentTheme?.bgColor}>
       <PageHeader
         title="Add New Food Item"
         subtitle="Fill out the form below to add a new menu item to your restaurant"
@@ -46,12 +48,8 @@ const AddFood = () => {
         ]}
         backgroundImage="/tasty-bites-images/banner/banner4.jpg"
       />
-      <div className="px-4 md:px-0">
-        <FoodForm
-          style="card w-full max-w-xl mx-auto shadow-xl hover:shadow-2xl rounded-md bg-stone-50"
-          onSubmit={handleAddFood}
-          btnText="Add"
-        />
+      <div className="px-4 md:px-0 py-8 md:py-10 lg:py-12">
+        <FoodForm onSubmit={handleAddFood} btnText="Add" style={`card w-full max-w-xl mx-auto shadow-xl hover:shadow-2xl rounded-md ${currentTheme.cardBgColor}`} />
       </div>
     </div>
   );

@@ -1,8 +1,10 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import PrimaryBtn from "../../component/Buttons/PrimaryBtn";
+import { useTheme } from "../../hooks/useTheme";
 
 const Food = ({ food }) => {
+  const { currentTheme } = useTheme();
   const {
     _id,
     name,
@@ -16,7 +18,7 @@ const Food = ({ food }) => {
 
   return (
     <motion.div
-      className="card flex flex-col h-full bg-white border border-stone-200 rounded-md overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300"
+      className={`card flex flex-col h-full ${currentTheme.cardBgColor} ${currentTheme.cardBorderColor}  ${currentTheme.textColor} border rounded-md overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300`}
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       whileHover={{
@@ -37,8 +39,8 @@ const Food = ({ food }) => {
           }}
         />
         {/* Category badge */}
-        <div className="absolute top-3 right-3 bg-blue-100 text-blue-500 px-3 py-1 text-xs font-semibold shadow-md rounded-full">
-          {food?.category}
+        <div className={`absolute top-3 right-3 ${currentTheme.cardBgColor} px-3 py-1 text-xs font-semibold shadow-md rounded-full`}>
+          {category}
         </div>
       </motion.figure>
 
@@ -46,16 +48,16 @@ const Food = ({ food }) => {
       <div className="flex flex-col flex-grow p-4 gap-4">
         {/* Title and price */}
         <div className="flex-grow">
-          <h3 className="text-lg font-bold text-stone-800 mb-2 line-clamp-2">
+          <h3 className={`text-lg font-bold ${currentTheme.cardTextColor} mb-2 line-clamp-2`}>
             {name}
           </h3>
           <div className="flex items-center justify-between mt-3">
-            <span className="text-xl font-bold text-yellow-600">${price}</span>
+            <span className="text-xl font-bold">${price}</span>
             <span
               className={`text-xs py-1 px-2 rounded-full ${
                 quantity > 0
-                  ? "bg-green-100 text-green-800"
-                  : "bg-red-100 text-red-800"
+                  ? currentTheme.successBgColor + " " + currentTheme.successColor
+                  : currentTheme.dangerBgColor + " " + currentTheme.dangerColor
               }`}
             >
               {quantity > 0 ? `${quantity} in stock` : "Out of stock"}
@@ -64,13 +66,13 @@ const Food = ({ food }) => {
         </div>
 
         {/* Divider */}
-        <div className="border-t border-stone-200"></div>
+        <div className={`border-t ${currentTheme.borderColor}`}></div>
 
         {/* More information */}
-        <div className="flex items-center justify-between gap-3 text-sm text-stone-600 mb-3">
+        <div className={`flex items-center justify-between gap-3 text-sm ${currentTheme.textColor} mb-3`}>
           <div className="flex items-center gap-2">
             <svg
-              className="w-4 h-4 text-stone-400"
+              className={`w-4 h-4 ${currentTheme.textColor} opacity-70`}
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -92,7 +94,7 @@ const Food = ({ food }) => {
           </div>
           <div className="flex items-center gap-2">
             <svg
-              className="w-4 h-4 text-stone-400"
+              className={`w-4 h-4 ${currentTheme.textColor} opacity-70`}
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -109,7 +111,11 @@ const Food = ({ food }) => {
         </div>
         <div className="mt-auto">
           <Link to={`/food/details/${_id}`}>
-            <PrimaryBtn style="w-full" btnText="View Details" />
+            <PrimaryBtn 
+              style="w-full" 
+              btnText="View Details"
+              type="button"
+            />
           </Link>
         </div>
       </div>

@@ -9,16 +9,36 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
 import useApi from "../../hooks/useApi";
 import PrimaryBtn from "../Buttons/PrimaryBtn";
-import { useTheme } from "../../hooks/useTheme"; // Import the useTheme hook
+import { useTheme } from "../../hooks/useTheme";
 
 const Categories = () => {
   const [categories, setCategories] = useState([]);
   const [activeCategory, setActiveCategory] = useState("");
   const [foods, setFoods] = useState([]);
   const { getPublicData, loading } = useApi();
-  const { apply } = useTheme();
+  const { currentTheme } = useTheme();
 
-  // 🔹 Fetch all categories with items
+  // Destructure theme properties
+  const {
+    textColor,
+    cardBgColor,
+    cardTextColor,
+    cardBorderColor,
+    primaryBtnBgColor,
+    primaryBtnTextColor,
+    primaryBtnHoverBgColor,
+    primaryColor,
+    secondaryBgColor,
+    secondaryTextColor,
+    accentColor,
+    highlightColor,
+    inactiveBtn,
+    activeBtn,
+    activeText,
+    inactiveText
+  } = currentTheme;
+
+  // Fetch all categories with items
   useEffect(() => {
     const fetchData = async () => {
       const response = await getPublicData("/categories");
@@ -35,19 +55,19 @@ const Categories = () => {
     fetchData();
   }, []);
 
-  // 🔹 Sync foods when category changes
+  // Sync foods when category changes
   useEffect(() => {
     const selected = categories.find((cat) => cat.name === activeCategory);
     setFoods(selected?.items || []);
   }, [activeCategory]);
 
   return (
-    <div className="mt-4 mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
-      <h2 className={`text-2xl sm:text-3xl font-bold mb-6 sm:mb-8 text-center ${apply('text')}`}>
+    <div className={`pt-4 pb-6 md:pb-8 lg:pb-12 mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl`}>
+      <h2 className={`text-2xl sm:text-3xl font-bold mb-6 sm:mb-8 text-center`}>
         🍱 Browse by Category
       </h2>
 
-      {/* 🔘 Category Buttons - Scrollable on mobile */}
+      {/* Category Buttons - Scrollable on mobile */}
       <div className="mb-6 sm:mb-8 overflow-x-auto pb-2">
         <div className="flex space-x-2 px-1 min-w-max">
           {categories.map(({ name }) => (
@@ -56,8 +76,8 @@ const Categories = () => {
               onClick={() => setActiveCategory(name)}
               className={`btn btn-sm rounded-full px-3 sm:px-4 capitalize transition-all duration-200 ${
                 activeCategory === name
-                  ?  `${apply('active')} ${apply('btnText')} border ${apply('inputBorder')}`
-                  : `${apply('inactive')} border ${apply('inputBorder')}`
+                  ? `${activeBtn}`
+                  : `${inactiveBtn}`
               }`}
             >
               {name}
@@ -67,7 +87,7 @@ const Categories = () => {
       </div>
 
       {loading ? (
-        <div className={`text-center py-12 ${apply('text')}`}>
+        <div className={`text-center py-12`}>
           <span className="loading loading-dots loading-lg"></span>
         </div>
       ) : (
@@ -102,14 +122,22 @@ const Categories = () => {
                   spaceBetween={12}
                   pagination={{
                     clickable: true,
+                    bulletClass: "swiper-pagination-bullet",
+                    bulletActiveClass: "swiper-pagination-bullet-active",
+                    renderBullet: (index, className) => {
+                      return `<span class="${className}" style="background-color: ${accentColor}"></span>`;
+                    }
                   }}
                   modules={[FreeMode, Pagination]}
                   className="mySwiper"
                 >
                   {foods?.map((food) => (
-                    <SwiperSlide key={food?._id} className="my-6 sm:my-8 rounded-xl">
+                    <SwiperSlide
+                      key={food?._id}
+                      className="my-6 sm:my-8 rounded-xl"
+                    >
                       <motion.div
-                        className={`card flex flex-col h-full w-full ${apply('cardBg')} border ${apply('inputBorder')} rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300`}
+                        className={`card flex flex-col h-full w-full rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 ${cardBgColor} border ${cardBorderColor}`}
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         whileHover={{
@@ -129,26 +157,28 @@ const Categories = () => {
                             }}
                           />
                           {/* Category badge */}
-                          <div className="absolute top-2 right-2 sm:top-3 sm:right-3 bg-blue-100 text-blue-500 px-2 sm:px-3 py-0.5 sm:py-1 text-xs font-semibold shadow-md rounded-full">
+                          <div
+                            className={`absolute top-2 right-2 sm:top-3 sm:right-3 px-2 sm:px-3 py-0.5 sm:py-1 text-xs font-semibold shadow-md rounded-full ${cardBgColor}`}
+                          >
                             {food?.category}
                           </div>
                         </motion.figure>
 
                         {/* Content section */}
-                        <div className={`flex flex-col flex-grow p-3 sm:p-4 gap-3 sm:gap-4 ${apply('cardText')}`}>
+                        <div className={`flex flex-col flex-grow p-3 sm:p-4 gap-3 sm:gap-4 ${cardTextColor}`}>
                           {/* Title and price */}
                           <div className="flex-grow">
-                            <h3 className={`text-base sm:text-lg font-bold mb-1 sm:mb-2 line-clamp-2 ${apply('text')}`}>
+                            <h3 className={`text-base sm:text-lg font-bold mb-1 sm:mb-2 line-clamp-2`}>
                               {food?.name}
                             </h3>
                             <div className="flex items-center justify-between mt-2 sm:mt-3">
-                              <span className="text-lg sm:text-xl font-bold text-yellow-600">
+                              <span className={`text-lg sm:text-xl font-bold ${primaryColor}`}>
                                 ${food?.price}
                               </span>
                               <span
                                 className={`text-xs py-0.5 sm:py-1 px-1.5 sm:px-2 rounded-full ${
                                   food?.quantity > 0
-                                    ? "bg-green-100 text-green-800"
+                                    ? `${highlightColor} ${secondaryTextColor}`
                                     : "bg-red-100 text-red-800"
                                 }`}
                               >
@@ -160,10 +190,10 @@ const Categories = () => {
                           </div>
 
                           {/* Divider */}
-                          <div className={`border-t ${apply('inputBorder')}`}></div>
+                          <div className={`border-t ${cardBorderColor}`}></div>
 
                           {/* More information */}
-                          <div className={`flex items-center justify-between gap-2 sm:gap-3 text-xs sm:text-sm mb-2 sm:mb-3 ${apply('cardText')}`}>
+                          <div className={`flex items-center justify-between gap-2 sm:gap-3 text-xs sm:text-sm mb-2 sm:mb-3`}>
                             <div className="flex items-center gap-1 sm:gap-2">
                               <svg
                                 className="w-3 h-3 sm:w-4 sm:h-4"
@@ -208,8 +238,9 @@ const Categories = () => {
                           <div className="mt-auto">
                             <Link to={`/food/details/${food?._id}`}>
                               <PrimaryBtn
-                                style="w-full py-2 text-sm sm:text-base"
                                 btnText="View Details"
+                                type="button"
+                                style="w-full"
                               />
                             </Link>
                           </div>
@@ -220,7 +251,7 @@ const Categories = () => {
                 </Swiper>
               </div>
             ) : (
-              <div className={`text-center text-sm py-8 sm:py-12 ${apply('cardText')}`}>
+              <div className={`text-center text-sm py-8 sm:py-12 ${textColor}`}>
                 No items in{" "}
                 <span className="font-semibold">{activeCategory}</span>
               </div>

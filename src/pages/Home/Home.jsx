@@ -9,7 +9,7 @@ import { useTheme } from "../../hooks/useTheme";
 const Home = () => {
   const [foods, setFoods] = useState();
   const { getPublicData, loading, error } = useApi();
-  const { apply } = useTheme();
+  const { currentTheme } = useTheme();
 
   const fetchFoods = useCallback(async () => {
     const response = await getPublicData("/latest/foods");
@@ -28,7 +28,7 @@ const Home = () => {
       path="/"
       onRetry={fetchFoods}
     >
-      <div className={apply("bg")}>
+      <div className={currentTheme.cardBgColor}>
         <Banner foods={foods} />
         <TopFoods />
         <Categories />

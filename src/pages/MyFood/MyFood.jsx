@@ -8,11 +8,23 @@ import {
   showErrorToast,
   showSuccessToast,
 } from "../../utils/CrudToast";
+import { useTheme } from "../../hooks/useTheme";
 
 const MyFood = ({ food, setAllFoods, allFoods }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { deleteData, updateData } = useApi();
   const { _id, image, name, category, price } = food || {};
+  const { currentTheme } = useTheme();
+  const {
+    textColor,
+    dangerColor,
+    dangerBgColor,
+    warningColor,
+    cardBgColor,
+    borderColor,
+    primaryTextColor,
+    secondaryBgColor
+  } = currentTheme;
 
   const handleEdit = () => {
     setIsModalOpen(true);
@@ -39,7 +51,7 @@ const MyFood = ({ food, setAllFoods, allFoods }) => {
         res?.message,
         ""
       );
-      setAllFoods(allFoods?.filter((food) => food._id !== id));
+      setAllFoods(allFoods?.filter((food) => food._id !== _id));
     } else {
       showErrorToast("⚠️ Update Failed", res?.message);
     }
@@ -48,9 +60,9 @@ const MyFood = ({ food, setAllFoods, allFoods }) => {
   const handleDelete = (id) => {
     confirmToast({
       message: (
-        <span>
+        <span className={textColor}>
           Are you sure you want to delete{" "}
-          <span className="font-semibold text-yellow-500">{name}</span>?
+          <span className={`font-semibold ${warningColor}`}>{name}</span>?
         </span>
       ),
       confirmText: "Yes, delete",
@@ -70,15 +82,17 @@ const MyFood = ({ food, setAllFoods, allFoods }) => {
             ""
           );
           setAllFoods(allFoods?.filter((food) => food._id !== id));
-        }else{
-          showErrorToast("⚠️ Couldn’t Delete Item", res?.message)
+        } else {
+          showErrorToast("⚠️ Couldn't Delete Item", res?.message);
         }
       },
+      confirmButtonStyle: `${dangerBgColor} ${dangerColor}`,
+      cancelButtonStyle: `${secondaryBgColor} ${primaryTextColor}`
     });
   };
 
   return (
-    <tr className="hover:bg-yellow-50 transition-colors">
+    <tr className={`${cardBgColor} transition-colors border-b ${borderColor}`}>
       <td className="py-4 px-4">
         <img
           src={image}
@@ -89,27 +103,27 @@ const MyFood = ({ food, setAllFoods, allFoods }) => {
       <td className="py-4 px-4 font-medium">
         <Link
           to={`/food/details/${_id}`}
-          className="text-yellow-600 hover:text-yellow-800 hover:underline transition-colors"
+          className={`${primaryTextColor} hover:underline transition-colors`}
         >
           {name}
         </Link>
       </td>
-      <td className="py-4 px-4">{category}</td>
-      <td className="py-4 px-4">
+      <td className={`py-4 px-4 ${textColor}`}>{category}</td>
+      <td className={`py-4 px-4 ${textColor}`}>
         {price ? `$${parseFloat(price).toFixed(2)}` : "$0.00"}
       </td>
       <td className="py-4 px-4">
         <div className="flex gap-4">
           <button
             onClick={() => handleEdit()}
-            className="text-yellow-600 hover:text-yellow-800 hover:underline transition-colors"
+            className={`hover:text-teal-600 text-teal-500 transition-colors`}
             title="Edit"
           >
             <FaEdit />
           </button>
           <button
             onClick={() => handleDelete(_id)}
-            className="text-red-600 hover:text-red-800 hover:underline transition-colors"
+            className={`hover:text-red-600 text-red-500 transition-colors`}
             title="Delete"
           >
             <FaTrash />
