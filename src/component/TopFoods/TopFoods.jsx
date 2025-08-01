@@ -23,8 +23,7 @@ const TopFoods = () => {
     cardBgColor,
     cardTextColor,
     cardBorderColor,
-    bgColor,
-    primaryTextColor,
+    bgColor
   } = currentTheme;
 
   const fetchFoods = useCallback(async () => {
@@ -62,7 +61,7 @@ const TopFoods = () => {
           {foods?.map((food) => (
             <motion.div
               key={food?._id}
-              className={`relative group rounded-2xl overflow-hidden shadow-xl border flex flex-col ${cardBgColor} ${cardBorderColor}`}
+              className={`relative group rounded-2xl overflow-hidden shadow-xl border flex flex-col ${cardBgColor} ${cardTextColor} ${cardBorderColor}`}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               whileHover={{ scale: 1.03 }}
@@ -70,7 +69,7 @@ const TopFoods = () => {
             >
             {/* Top Pick Ribbon */}
             <div
-              className={`absolute -left-10 top-4 rotate-[-45deg] ${bgColor} text-xs font-bold px-10 py-1 shadow-lg z-10 ${primaryTextColor}`}
+              className={`absolute -left-10 top-4 rotate-[-45deg] ${bgColor} text-xs font-bold px-10 py-1 shadow-lg z-10`}
             >
               🏆 Top Pick
             </div>
@@ -78,7 +77,7 @@ const TopFoods = () => {
             {/* Best Seller Badge */}
             {food?.purchaseCount > 50 && (
               <div
-                className={`absolute top-4 right-4 text-xs font-semibold px-3 py-1 rounded-full shadow-lg z-10 ${bgColor} ${primaryTextColor}`}
+                className={`absolute top-4 right-4 text-xs font-semibold px-3 py-1 rounded-full shadow-lg z-10 ${bgColor}`}
               >
                 ⭐ Best Seller
               </div>
@@ -93,7 +92,7 @@ const TopFoods = () => {
                 loading="lazy"
               />
               <div
-                className={`absolute bottom-2 left-2 text-xs px-3 py-1 rounded-full shadow-md ${bgColor} ${primaryTextColor}`}
+                className={`absolute bottom-2 left-2 text-xs px-3 py-1 rounded-full shadow-md ${bgColor}`}
               >
                 🏷️ {food?.category}
               </div>
@@ -102,15 +101,15 @@ const TopFoods = () => {
             {/* Content area with flex-grow */}
             <div className="p-5 flex flex-col flex-grow">
               <div className="flex flex-col gap-3">
-                <h3 className={`text-xl font-bold ${textColor}`}>
+                <h3 className={`text-xl font-bold`}>
                   {food?.name}
                 </h3>
                 <div className="flex items-center justify-between text-sm">
-                  <span className={`flex items-center gap-1 ${cardTextColor}`}>
-                    <FaGlobeAsia className={`${primaryTextColor}`} />
+                  <span className={`flex items-center gap-1`}>
+                    <FaGlobeAsia />
                     {food?.origin}
                   </span>
-                  <span className={`flex items-center gap-1 ${cardTextColor}`}>
+                  <span className={`flex items-center gap-1`}>
                     <svg
                       className="w-3 h-3 sm:w-4 sm:h-4"
                       fill="none"
@@ -130,7 +129,7 @@ const TopFoods = () => {
 
                 <div className="flex items-center justify-between">
                   <span
-                    className={`text-2xl font-extrabold relative ${textColor}`}
+                    className={`text-2xl font-extrabold relative`}
                   >
                     ${food?.price}
                     {isRecentlyUpdated(food?.updateAt) && (
@@ -141,7 +140,7 @@ const TopFoods = () => {
                       </span>
                     )}
                   </span>
-                  <p className={cardTextColor}>
+                  <p>
                     📦
                     <span className={`text-xs font-semibold pl-1 rounded-full`}>
                       {food?.quantity > 0

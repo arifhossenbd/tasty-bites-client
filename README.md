@@ -56,13 +56,6 @@ A full-stack MERN-based restaurant management platform for online food ordering 
 Available at:  
 🔗 [https://tasty-bites-67c7d.web.app/](https://tasty-bites-67c7d.web.app/)
 
-## 🛠️ Setup
-
-### Requirements
-- Node.js
-- MongoDB
-- Firebase
-
 ### Installation
 1. Clone repositories:
 ```bash

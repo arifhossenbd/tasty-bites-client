@@ -22,9 +22,7 @@ const Navbar = () => {
     activeBtn,
     textColor,
     activeText,
-    primaryBtn,
     inactiveText,
-    footerBgColor,
     footerTextColor,
   } = currentTheme;
 
@@ -215,7 +213,7 @@ const Navbar = () => {
                   <div>
                     <Link
                       to="/sign-in"
-                      className={`${transitionNoDelay} hover:${textColor} font-semibold flex items-center gap-1 group`}
+                      className={`${transitionNoDelay} ${inactiveText} font-semibold flex items-center gap-1 group`}
                     >
                       <FiArrowRightCircle
                         className={`${transitionNoDelay} group-hover:translate-x-0 hover:${textColor} group-hover:opacity-100 -translate-x-1 opacity-0`}

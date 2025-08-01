@@ -102,7 +102,7 @@ const MyOrders = () => {
         ]}
         backgroundImage="/tasty-bites-images/banner/banner9.jpg"
       />
-      <div className={currentTheme?.bgColor}>
+      <div className={`${currentTheme?.bgColor} ${currentTheme?.textColor}`}>
         <div className={`px-4 md:px-0 md:w-11/12 lg:w-10/12 mx-auto py-6 md:py-8 lg:py-12`}>
           <div
             className={`flex flex-col md:flex-row items-center gap-4 ${currentTheme.cardBgColor} border ${currentTheme.borderColor} rounded-xl shadow-md p-4 mb-6`}
@@ -149,7 +149,7 @@ const MyOrders = () => {
                   setSortOrder(e.target.value);
                   setPage(1);
                 }}
-                className={`border ${currentTheme.borderColor} rounded px-2 py-1 ${currentTheme.inputBgColor} ${currentTheme.textColor}`}
+                className={`border ${currentTheme.borderColor} rounded px-2 py-1 ${currentTheme.inputBgColor} ${currentTheme.inputTextColor}`}
               >
                 <option value="latest">Recently Ordered 🕒</option>
                 <option value="oldest">Oldest First 📅</option>
@@ -166,7 +166,7 @@ const MyOrders = () => {
                   setLimit(Number(e.target.value));
                   setPage(1);
                 }}
-                className={`border ${currentTheme.borderColor} rounded px-2 py-1 ${currentTheme.inputBgColor} ${currentTheme.textColor}`}
+                className={`border ${currentTheme.borderColor} rounded px-2 py-1 ${currentTheme.inputBgColor} ${currentTheme.inputTextColor}`}
               >
                 {[5, 10, 20, 50].map((size) => (
                   <option key={size} value={size}>
